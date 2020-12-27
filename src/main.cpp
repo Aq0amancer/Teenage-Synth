@@ -1,5 +1,6 @@
 #include <Arduino.h>
 #include <Audio.h>
+
 #include "saw.h"
 #include "data_types_lookup_tables.h"
 #include "global_variables.h"
@@ -8,21 +9,24 @@
 #include "midi_handlers.h"
 #include "SynthArch.h"
 #include "global_variables.h"
+
 #include "Wire.h"
 #include <SPI.h>
 #include <MIDI.h>
 #include <SerialFlash.h>
-#include <string>
+#include <iostream> // std::cout
+#include <LCD.h>
 
 // Debugging functions
 //////////////////////////////////////////////////////////////////////
 
-/// CUSTOM FUNCTION
+/// CUSTOM FUNCTION DECLARATIONS
+
 void oscDump(uint8_t idx);
 void oscDump(const Oscillator &o);
-void printLCD_int(char *section, char *variable, int value, char *unit);
-void printLCD_float(char *section, char *variable, float value, char *unit);
-void printLCD_string(char *section, char *variable, char *value, char *unit);
+void printLCD(char *section, char *variable, int value, char *unit);
+void checkKnobs();
+
 ////
 #if SYNTH_DEBUG > 0
 float statsCpu = 0;
@@ -208,16 +212,18 @@ void selectCommand(char c)
 
 void setup()
 {
+  Serial.begin(115200);
+
   // LCD
 
   lcd.begin(16, 2);
 
-  pinMode(KNOB1, INPUT);   // Knob 1
-  pinMode(KNOB2, INPUT);   // Knob 2
-  pinMode(KNOB3, INPUT);   // Knob 3
-  pinMode(KNOB4, INPUT);   // Knob 4
-  pinMode(MOD, INPUT);     // Input for modulators (osc, filter, adsr etc.)
-  pinMode(PROGRAM, INPUT); // Input for program (SAVE/RECALL)
+  pinMode(KNOB1, INPUT);          // Knob 1
+  pinMode(KNOB2, INPUT);          // Knob 2
+  pinMode(KNOB3, INPUT);          // Knob 3
+  pinMode(KNOB4, INPUT);          // Knob 4
+  pinMode(MOD, INPUT_PULLUP);     // Input for modulators (osc, filter, adsr etc.)
+  pinMode(PROGRAM, INPUT_PULLUP); // Input for program (SAVE/RECALL)
 
   pinMode(LED1, OUTPUT); // LED1
   pinMode(LED2, OUTPUT); // LED2
@@ -228,6 +234,16 @@ void setup()
   pinMode(LED7, OUTPUT); // LED7
   pinMode(LED8, OUTPUT); // LED8
   pinMode(LED9, OUTPUT); // LED9
+
+  digitalWrite(LED1, 0);
+  digitalWrite(LED2, 0);
+  digitalWrite(LED3, 0);
+  digitalWrite(LED4, 0);
+  digitalWrite(LED5, 0);
+  digitalWrite(LED6, 0);
+  digitalWrite(LED7, 0);
+  digitalWrite(LED8, 0);
+  digitalWrite(LED9, 0);
 
 #if SYNTH_DEBUG > 0
   SYNTH_SERIAL.begin(115200);
@@ -256,10 +272,10 @@ void setup()
   MIDI.setHandlePitchBend(OnPitchChange);
   MIDI.setHandleAfterTouchChannel(OnAfterTouch);
 
-  usbMIDI.setHandleNoteOff(OnNoteOff);
-  usbMIDI.setHandleNoteOn(OnNoteOn);
-  usbMIDI.setHandleControlChange(OnControlChange);
-  usbMIDI.setHandlePitchChange(OnPitchChange);
+  //usbMIDI.setHandleNoteOff(OnNoteOff);
+  //usbMIDI.setHandleNoteOn(OnNoteOn);
+  //usbMIDI.setHandleControlChange(OnControlChange);
+  //usbMIDI.setHandlePitchChange(OnPitchChange);
   delay(1000);
 
   SYNTH_SERIAL.println();
@@ -276,7 +292,7 @@ void setup()
 void loop()
 {
   MIDI.read();
-  usbMIDI.read();
+  //usbMIDI.read();
 
 #if SYNTH_DEBUG > 0
   performanceCheck();
@@ -309,44 +325,127 @@ void checkKnobs()
     int KNOB4Read = analogRead(KNOB4);
     int PROGRAMRead = analogRead(PROGRAM);
 
-    if (MODRead > 0)
-    { //If clicking one of the 9 buttons
-      if (MODRead < 114)
-      { // Button 1 clicked
-        if (PROGRAMRead > 0 && PROGRAMRead < 512)
-        { //SAVE
+    if (MODRead > 130) //Any button clicked?
+    {
+      Serial.println(MODRead);
+
+      if (MODRead < 140 && MODRead > 120) // Button 1 clicked
+      {
+        digitalWrite(LED1, 1);
+        digitalWrite(LED2, 0);
+        digitalWrite(LED3, 0);
+        digitalWrite(LED4, 0);
+        digitalWrite(LED5, 0);
+        digitalWrite(LED6, 0);
+        digitalWrite(LED7, 0);
+        digitalWrite(LED8, 0);
+        digitalWrite(LED9, 0);
+
+        if (PROGRAMRead > 0 && PROGRAMRead < 512) //SAVE clicked
+        {
           //recallPatch(1);
         }
-        else if (PROGRAMRead >= 512)
-        { //RECALL
+        else if (PROGRAMRead >= 512) //RECALL clicked
+        {
           //savePatch(1);
         }
-        else
-        { // CHANGE MOD
+        else // CHANGE MOD
+        {
           if (KNOB1Read > (KNOB1Value + controlThresh) || KNOB1Read < (KNOB1Value - controlThresh))
           {
             KNOB1Read = (KNOB1Read >> 3);
-            OnControlChange(SYNTH_MIDICHANNEL, CC_Filter_Release, KNOB1Read);
+            OnControlChange(SYNTH_MIDICHANNEL, CC_Level1, KNOB1Read);
           }
           if (KNOB2Read > (KNOB2Value + controlThresh) || KNOB2Read < (KNOB2Value - controlThresh))
           {
             KNOB2Read = (KNOB2Read >> 3);
-            OnControlChange(SYNTH_MIDICHANNEL, CC_Filter_Release, KNOB2Read);
+            OnControlChange(SYNTH_MIDICHANNEL, CC_OSC1, KNOB2Read);
           }
           if (KNOB3Read > (KNOB3Value + controlThresh) || KNOB3Read < (KNOB3Value - controlThresh))
           {
             KNOB3Read = (KNOB3Read >> 3);
-            OnControlChange(SYNTH_MIDICHANNEL, CC_Filter_Release, KNOB3Read);
+            OnControlChange(SYNTH_MIDICHANNEL, CC_Octave1, KNOB3Read);
           }
           if (KNOB4Read > (KNOB4Value + controlThresh) || KNOB4Read < (KNOB4Value - controlThresh))
           {
             KNOB4Read = (KNOB4Read >> 3);
-            OnControlChange(SYNTH_MIDICHANNEL, CC_Filter_Release, KNOB4Read);
+            OnControlChange(SYNTH_MIDICHANNEL, CC_PWM1, KNOB4Read);
           }
         }
       }
-      else if (MODRead < 228 && MODRead >= 114)
-      { // Button 2 clicked
+      else if (MODRead < 230 && MODRead >= 120) // Button 2 clicked
+      {
+        digitalWrite(LED1, 0);
+        digitalWrite(LED2, 1);
+        digitalWrite(LED3, 0);
+        digitalWrite(LED4, 0);
+        digitalWrite(LED5, 0);
+        digitalWrite(LED6, 0);
+        digitalWrite(LED7, 0);
+        digitalWrite(LED8, 0);
+        digitalWrite(LED9, 0);
+        if (PROGRAMRead > 0 && PROGRAMRead < 512) //SAVE clicked
+        {
+        }
+        else if (PROGRAMRead >= 512) //RECALL clicked
+        {                            //RECALL
+        }
+        else
+        {
+          if (KNOB1Read > (KNOB1Value + controlThresh) || KNOB1Read < (KNOB1Value - controlThresh))
+          {
+            KNOB1Read = (KNOB1Read >> 3);
+            OnControlChange(SYNTH_MIDICHANNEL, CC_Level2, KNOB1Read);
+          }
+          if (KNOB2Read > (KNOB2Value + controlThresh) || KNOB2Read < (KNOB2Value - controlThresh))
+          {
+            KNOB2Read = (KNOB2Read >> 3);
+            OnControlChange(SYNTH_MIDICHANNEL, CC_OSC2, KNOB2Read);
+          }
+          if (KNOB3Read > (KNOB3Value + controlThresh) || KNOB3Read < (KNOB3Value - controlThresh))
+          {
+            KNOB3Read = (KNOB3Read >> 3);
+            OnControlChange(SYNTH_MIDICHANNEL, CC_Octave2, KNOB3Read);
+          }
+          if (KNOB4Read > (KNOB4Value + controlThresh) || KNOB4Read < (KNOB4Value - controlThresh))
+          {
+            KNOB4Read = (KNOB4Read >> 3);
+            OnControlChange(SYNTH_MIDICHANNEL, CC_PWM2, KNOB4Read);
+          }
+        }
+      }
+      else if (MODRead >= 900) // Button 3 clicked
+      {
+        digitalWrite(LED1, 0);
+        digitalWrite(LED2, 0);
+        digitalWrite(LED3, 1);
+        digitalWrite(LED4, 0);
+        digitalWrite(LED5, 0);
+        digitalWrite(LED6, 0);
+        digitalWrite(LED7, 0);
+        digitalWrite(LED8, 0);
+        digitalWrite(LED9, 0);
+        if (PROGRAMRead > 0 && PROGRAMRead < 512) //SAVE clicked
+        {                                         //SAVE
+        }
+        else if (PROGRAMRead >= 512) //RECALL clicked
+        {
+        }
+        else
+        { // CHANGE MOD
+        }
+      }
+      else if (MODRead < 270 && MODRead >= 230) // Button 4 clicked
+      {
+        digitalWrite(LED1, 0);
+        digitalWrite(LED2, 0);
+        digitalWrite(LED3, 0);
+        digitalWrite(LED4, 1);
+        digitalWrite(LED5, 0);
+        digitalWrite(LED6, 0);
+        digitalWrite(LED7, 0);
+        digitalWrite(LED8, 0);
+        digitalWrite(LED9, 0);
         if (PROGRAMRead > 0 && PROGRAMRead < 512)
         { //SAVE
         }
@@ -357,8 +456,17 @@ void checkKnobs()
         { // CHANGE MOD
         }
       }
-      else if (MODRead < 342 && MODRead >= 228)
-      { // Button 3 clicked
+      else if (MODRead < 300 && MODRead >= 270) // Button 5 clicked
+      {
+        digitalWrite(LED1, 0);
+        digitalWrite(LED2, 0);
+        digitalWrite(LED3, 0);
+        digitalWrite(LED4, 0);
+        digitalWrite(LED5, 1);
+        digitalWrite(LED6, 0);
+        digitalWrite(LED7, 0);
+        digitalWrite(LED8, 0);
+        digitalWrite(LED9, 0);
         if (PROGRAMRead > 0 && PROGRAMRead < 512)
         { //SAVE
         }
@@ -369,8 +477,18 @@ void checkKnobs()
         { // CHANGE MOD
         }
       }
-      else if (MODRead < 456 && MODRead >= 342)
-      { // Button 4 clicked
+      else if (MODRead < 600 && MODRead >= 480) // Button 6 clicked
+      {
+        digitalWrite(LED1, 0);
+        digitalWrite(LED2, 0);
+        digitalWrite(LED3, 0);
+        digitalWrite(LED4, 0);
+        digitalWrite(LED5, 0);
+        digitalWrite(LED6, 1);
+        digitalWrite(LED7, 0);
+        digitalWrite(LED8, 0);
+        digitalWrite(LED9, 0);
+
         if (PROGRAMRead > 0 && PROGRAMRead < 512)
         { //SAVE
         }
@@ -381,8 +499,17 @@ void checkKnobs()
         { // CHANGE MOD
         }
       }
-      else if (MODRead < 570 && MODRead >= 456)
-      { // Button 5 clicked
+      else if (MODRead < 380 && MODRead >= 300) // Button 7 clicked
+      {
+        digitalWrite(LED1, 0);
+        digitalWrite(LED2, 0);
+        digitalWrite(LED3, 0);
+        digitalWrite(LED4, 0);
+        digitalWrite(LED5, 0);
+        digitalWrite(LED6, 0);
+        digitalWrite(LED7, 1);
+        digitalWrite(LED8, 0);
+        digitalWrite(LED9, 0);
         if (PROGRAMRead > 0 && PROGRAMRead < 512)
         { //SAVE
         }
@@ -393,8 +520,17 @@ void checkKnobs()
         { // CHANGE MOD
         }
       }
-      else if (MODRead < 684 && MODRead >= 570)
-      { // Button 6 clicked
+      else if (MODRead < 480 && MODRead >= 380) // Button 8 clicked
+      {
+        digitalWrite(LED1, 0);
+        digitalWrite(LED2, 0);
+        digitalWrite(LED3, 0);
+        digitalWrite(LED4, 0);
+        digitalWrite(LED5, 0);
+        digitalWrite(LED6, 0);
+        digitalWrite(LED7, 0);
+        digitalWrite(LED8, 1);
+        digitalWrite(LED9, 0);
         if (PROGRAMRead > 0 && PROGRAMRead < 512)
         { //SAVE
         }
@@ -405,32 +541,17 @@ void checkKnobs()
         { // CHANGE MOD
         }
       }
-      else if (MODRead < 798 && MODRead >= 684)
-      { // Button 7 clicked
-        if (PROGRAMRead > 0 && PROGRAMRead < 512)
-        { //SAVE
-        }
-        else if (PROGRAMRead >= 512)
-        { //RECALL
-        }
-        else
-        { // CHANGE MOD
-        }
-      }
-      else if (MODRead < 912 && MODRead >= 798)
-      { // Button 8 clicked
-        if (PROGRAMRead > 0 && PROGRAMRead < 512)
-        { //SAVE
-        }
-        else if (PROGRAMRead >= 512)
-        { //RECALL
-        }
-        else
-        { // CHANGE MOD
-        }
-      }
-      else if (MODRead >= 912)
-      { // Button 9 clicked
+      else if (MODRead < 900 && MODRead >= 600) // Button 9 clicked
+      {
+        digitalWrite(LED1, 0);
+        digitalWrite(LED2, 0);
+        digitalWrite(LED3, 0);
+        digitalWrite(LED4, 0);
+        digitalWrite(LED5, 0);
+        digitalWrite(LED6, 0);
+        digitalWrite(LED7, 0);
+        digitalWrite(LED8, 0);
+        digitalWrite(LED9, 1);
         if (PROGRAMRead > 0 && PROGRAMRead < 512)
         { //SAVE
         }
@@ -442,129 +563,17 @@ void checkKnobs()
         }
       }
     }
+    else
+    {
+      digitalWrite(LED1, 0);
+      digitalWrite(LED2, 0);
+      digitalWrite(LED3, 0);
+      digitalWrite(LED4, 0);
+      digitalWrite(LED5, 0);
+      digitalWrite(LED6, 0);
+      digitalWrite(LED7, 0);
+      digitalWrite(LED8, 0);
+      digitalWrite(LED9, 0);
+    }
   }
-
-case 0:
-  OnControlChange(SYNTH_MIDICHANNEL, CC_Filter_Release, muxRead);
-  break;
-case 1:
-  OnControlChange(SYNTH_MIDICHANNEL, CC_Filter_Attenuation, muxRead);
-  break;
-case 2:
-  OnControlChange(SYNTH_MIDICHANNEL, CC_Filter_Mode, muxRead);
-  break;
-case 3:
-  OnControlChange(SYNTH_MIDICHANNEL, CC_Filter_Resonance, muxRead);
-  break;
-case 4:
-  OnControlChange(SYNTH_MIDICHANNEL, CC_Volume, muxRead);
-  break;
-case 5:
-  OnControlChange(SYNTH_MIDICHANNEL, CC_Waveform1, muxRead);
-  break;
-case 6:
-  OnControlChange(SYNTH_MIDICHANNEL, CC_Waveform2, muxRead);
-  break;
-case 7:
-  OnControlChange(SYNTH_MIDICHANNEL, CC_Pan, muxRead);
-  break;
-}
-}
-
-if (muxRead2 > (muxValues2[muxInput] + controlThresh) || muxRead2 < (muxValues2[muxInput] - controlThresh))
-{
-  muxValues2[muxInput] = muxRead2;
-  muxRead2 = (muxRead2 >> 3); //Change range to 0-127
-  switch (muxInput)
-  {
-  case 0:
-    OnControlChange(SYNTH_MIDICHANNEL, CC_Filter_Frequency, muxRead2);
-    break;
-  case 1:
-    OnControlChange(SYNTH_MIDICHANNEL, CC_Octave1, muxRead2);
-    break;
-  case 2:
-    OnControlChange(SYNTH_MIDICHANNEL, CC_Detune, muxRead2);
-    break;
-  case 3:
-    OnControlChange(SYNTH_MIDICHANNEL, CC_Attack, muxRead2);
-    break;
-  case 4:
-    OnControlChange(SYNTH_MIDICHANNEL, CC_Decay, muxRead2);
-    break;
-  case 5:
-    OnControlChange(SYNTH_MIDICHANNEL, CC_Sustain, muxRead2);
-    break;
-  case 6:
-    OnControlChange(SYNTH_MIDICHANNEL, CC_Release, muxRead2);
-    break;
-  case 7:
-    OnControlChange(SYNTH_MIDICHANNEL, CC_Flanger_On, muxRead2);
-    break;
-  }
-}
-if (muxRead3 > (muxValues3[muxInput] + controlThresh) || muxRead3 < (muxValues3[muxInput] - controlThresh))
-{
-  muxValues3[muxInput] = muxRead3;
-  muxRead3 = (muxRead3 >> 3); //Change range to 0-127
-  switch (muxInput)
-  {
-  case 0:
-    OnControlChange(SYNTH_MIDICHANNEL, CC_Flanger_Depth, muxRead3);
-    break;
-  case 1:
-    OnControlChange(SYNTH_MIDICHANNEL, CC_Flanger_Offset, muxRead3);
-    break;
-  case 2:
-    OnControlChange(SYNTH_MIDICHANNEL, CC_Flanger_Fine, muxRead3);
-    break;
-  case 3:
-    OnControlChange(SYNTH_MIDICHANNEL, CC_Noise, muxRead3);
-    break;
-  case 4:
-    OnControlChange(SYNTH_MIDICHANNEL, CC_PWM1, muxRead3);
-    break;
-  case 5:
-    OnControlChange(SYNTH_MIDICHANNEL, CC_PWM2, muxRead3);
-    break;
-  case 6:
-    OnControlChange(SYNTH_MIDICHANNEL, CC_Oscmix, muxRead3);
-    break;
-  case 7:
-    OnControlChange(SYNTH_MIDICHANNEL, CC_PWM_Rate, muxRead3);
-    break;
-  }
-}
-if (muxRead4 > (muxValues4[muxInput] + controlThresh) || muxRead4 < (muxValues4[muxInput] - controlThresh))
-{
-  muxValues4[muxInput] = muxRead4;
-  muxRead4 = (muxRead4 >> 3); //Change range to 0-127
-  switch (muxInput)
-  {
-  case 0:
-    OnControlChange(SYNTH_MIDICHANNEL, CC_Filter_Attack, muxRead4);
-    break;
-  case 1:
-    OnControlChange(SYNTH_MIDICHANNEL, CC_Octave2, muxRead4);
-    break;
-  case 2:
-    OnControlChange(SYNTH_MIDICHANNEL, CC_LFO_Level1, muxRead4);
-    break;
-  case 3:
-    OnControlChange(SYNTH_MIDICHANNEL, CC_LFO_Waveform1, muxRead4);
-    break;
-  case 4:
-    OnControlChange(SYNTH_MIDICHANNEL, CC_LFO_Rate1, muxRead4);
-    break;
-  case 5:
-    OnControlChange(SYNTH_MIDICHANNEL, CC_LFO_Level2, muxRead4);
-    break;
-  case 6:
-    OnControlChange(SYNTH_MIDICHANNEL, CC_LFO_Waveform2, muxRead4);
-    break;
-  case 7:
-    OnControlChange(SYNTH_MIDICHANNEL, CC_LFO_Rate2, muxRead4);
-    break;
-  }
-}
 }
