@@ -2,6 +2,8 @@
 // MIDI handlers
 //////////////////////////////////////////////////////////////////////
 #include "global_variables.h"
+#include <LiquidCrystal.h>
+#include <string>
 
 Oscillator *OnNoteOffReal(uint8_t channel, uint8_t note, uint8_t velocity, bool ignoreSustain)
 {
@@ -194,7 +196,7 @@ void OnControlChange(uint8_t channel, uint8_t control, uint8_t value)
 
     updateWaveforms();
     sprintf(buffer_secondrow, "Waveform: %s", waveforms[currentProgram1]);
-    printLCD("Oscillator 1", buffer_secondrow);
+    printLCD("Oscillator",buffer_secondrow);
     break;
   }
 #if SYNTH_DEBUG > 1
@@ -306,7 +308,8 @@ void OnControlChange(uint8_t channel, uint8_t control, uint8_t value)
     else if (value > 108 && value <= 127)
       currentLFOProgram1 = 6;
     updateLFO1();
-    sprintf(buffer_secondrow, "Waveform: %s", waveforms[currentLFOProgram1]);
+    //sprintf(buffer_secondrow, "Waveform: %s", waveforms[currentLFOProgram1]);
+    sprintf(buffer_secondrow, "Waveform");
     printLCD("Pitch LFO", buffer_secondrow);
 
     break;

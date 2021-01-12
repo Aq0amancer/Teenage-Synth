@@ -6,8 +6,8 @@
 #define GLOBALVARIABLES_H
 // LCD Buffers
 
-char buffer_firstrow[5];
-char buffer_secondrow[5];
+char buffer_firstrow[16];
+char buffer_secondrow[16];
 
 //CC Controls///////////////////////////////
 
@@ -75,24 +75,25 @@ char buffer_secondrow[5];
 
 //Knobs
 #define KNOB1 14 // LED1
-#define KNOB2 15 // LED1
-#define KNOB3 16 // LED1
-#define KNOB4 17 // LED1
+#define KNOB2 16 // LED1
+#define KNOB3 17 // LED1
+#define KNOB4 18 // LED1
 
 // PROGRAM CHANGE
-#define MOD 18     // Input for modulators (osc, filter, adsr etc.)
+#define MOD 15     // Input for modulators (osc, filter, adsr etc.)
 #define PROGRAM 19 // Input for program (SAVE/RECALL)
-
+#define THRESHOLD_SAVE 400
+#define THRESHOLD_LOAD 1000
 // LEDs
-#define LED1 1  // LED1
-#define LED2 2  // LED2
-#define LED3 3  // LED3
-#define LED4 4  // LED4
-#define LED5 5  // LED5
-#define LED6 6  // LED6
-#define LED7 20 // LED7
-#define LED8 21 // LED8
-#define LED9 22 // LED9
+#define LED1 2  // LED1
+#define LED2 3  // LED2
+#define LED3 4  // LED3
+#define LED4 5  // LED4
+#define LED5 6  // LED5
+#define LED6 20  // LED6
+#define LED7 21 // LED7
+#define LED8 22 // LED8
+#define LED9 23 // LED9
 
 #define PORTAMENTO 21 //
 #define PAN 22        //

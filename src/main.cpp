@@ -218,12 +218,12 @@ void setup()
 
   lcd.begin(16, 2);
 
-  pinMode(KNOB1, INPUT);          // Knob 1
-  pinMode(KNOB2, INPUT);          // Knob 2
-  pinMode(KNOB3, INPUT);          // Knob 3
-  pinMode(KNOB4, INPUT);          // Knob 4
-  pinMode(MOD, INPUT_PULLUP);     // Input for modulators (osc, filter, adsr etc.)
-  pinMode(PROGRAM, INPUT_PULLUP); // Input for program (SAVE/RECALL)
+  pinMode(KNOB1, INPUT_PULLUP);          // Knob 1
+  pinMode(KNOB2, INPUT_PULLUP);          // Knob 2
+  pinMode(KNOB3, INPUT_PULLUP);          // Knob 3
+  pinMode(KNOB4, INPUT_PULLUP);          // Knob 4
+  pinMode(MOD, INPUT);     // Input for modulators (osc, filter, adsr etc.)
+  pinMode(PROGRAM, INPUT); // Input for program (SAVE/RECALL)
 
   pinMode(LED1, OUTPUT); // LED1
   pinMode(LED2, OUTPUT); // LED2
@@ -244,6 +244,7 @@ void setup()
   digitalWrite(LED7, 0);
   digitalWrite(LED8, 0);
   digitalWrite(LED9, 0);
+
 
 #if SYNTH_DEBUG > 0
   SYNTH_SERIAL.begin(115200);
@@ -306,13 +307,14 @@ void loop()
 
 void checkKnobs()
 {
-  static int controlThresh = 2;
+  static int controlThresh = 10;
   unsigned long currentMicros = micros();
   static unsigned long LFOtime = 0;
   static int KNOB1Value = {};
   static int KNOB2Value = {};
   static int KNOB3Value = {};
   static int KNOB4Value = {};
+
 
   if (currentMicros - LFOtime >= 1000)
   {
@@ -324,12 +326,14 @@ void checkKnobs()
     int KNOB3Read = analogRead(KNOB3);
     int KNOB4Read = analogRead(KNOB4);
     int PROGRAMRead = analogRead(PROGRAM);
-
-    if (MODRead > 130) //Any button clicked?
+    Serial.println(MODRead);
+    if (MODRead > 50) //Any button clicked?
     {
-      Serial.println(MODRead);
 
-      if (MODRead < 140 && MODRead > 120) // Button 1 clicked
+      //sprintf(buffer_secondrow, "Mod Read %d", MODRead);
+      
+
+      if (MODRead < 100 && MODRead > 90 ) // Button 1 clicked
       {
         digitalWrite(LED1, 1);
         digitalWrite(LED2, 0);
@@ -341,11 +345,11 @@ void checkKnobs()
         digitalWrite(LED8, 0);
         digitalWrite(LED9, 0);
 
-        if (PROGRAMRead > 0 && PROGRAMRead < 512) //SAVE clicked
+        if (PROGRAMRead > THRESHOLD_SAVE && PROGRAMRead < THRESHOLD_LOAD) //SAVE clicked
         {
           //recallPatch(1);
         }
-        else if (PROGRAMRead >= 512) //RECALL clicked
+        else if (PROGRAMRead >= THRESHOLD_LOAD) //RECALL clicked
         {
           //savePatch(1);
         }
@@ -354,26 +358,30 @@ void checkKnobs()
           if (KNOB1Read > (KNOB1Value + controlThresh) || KNOB1Read < (KNOB1Value - controlThresh))
           {
             KNOB1Read = (KNOB1Read >> 3);
-            OnControlChange(SYNTH_MIDICHANNEL, CC_Level1, KNOB1Read);
+            //OnControlChange(SYNTH_MIDICHANNEL, CC_Level1, KNOB1Read);
           }
           if (KNOB2Read > (KNOB2Value + controlThresh) || KNOB2Read < (KNOB2Value - controlThresh))
           {
+            //KNOB2Value=KNOB2Read;
+            Serial.println(KNOB2Read);
             KNOB2Read = (KNOB2Read >> 3);
             OnControlChange(SYNTH_MIDICHANNEL, CC_OSC1, KNOB2Read);
+            lcd.clear();
+
           }
           if (KNOB3Read > (KNOB3Value + controlThresh) || KNOB3Read < (KNOB3Value - controlThresh))
           {
             KNOB3Read = (KNOB3Read >> 3);
-            OnControlChange(SYNTH_MIDICHANNEL, CC_Octave1, KNOB3Read);
+            //OnControlChange(SYNTH_MIDICHANNEL, CC_Octave1, KNOB3Read);
           }
           if (KNOB4Read > (KNOB4Value + controlThresh) || KNOB4Read < (KNOB4Value - controlThresh))
           {
             KNOB4Read = (KNOB4Read >> 3);
-            OnControlChange(SYNTH_MIDICHANNEL, CC_PWM1, KNOB4Read);
+            //OnControlChange(SYNTH_MIDICHANNEL, CC_PWM1, KNOB4Read);
           }
         }
       }
-      else if (MODRead < 230 && MODRead >= 120) // Button 2 clicked
+      else if (MODRead < 140 && MODRead >= 130) // Button 2 clicked
       {
         digitalWrite(LED1, 0);
         digitalWrite(LED2, 1);
@@ -384,11 +392,13 @@ void checkKnobs()
         digitalWrite(LED7, 0);
         digitalWrite(LED8, 0);
         digitalWrite(LED9, 0);
-        if (PROGRAMRead > 0 && PROGRAMRead < 512) //SAVE clicked
+        if (PROGRAMRead > THRESHOLD_SAVE && PROGRAMRead < THRESHOLD_LOAD) //SAVE clicked
         {
+          //recallPatch(1);
         }
-        else if (PROGRAMRead >= 512) //RECALL clicked
-        {                            //RECALL
+        else if (PROGRAMRead >= THRESHOLD_LOAD) //RECALL clicked
+        {
+          //savePatch(1);
         }
         else
         {
@@ -414,7 +424,7 @@ void checkKnobs()
           }
         }
       }
-      else if (MODRead >= 900) // Button 3 clicked
+      else if (MODRead < 175 && MODRead >= 165) // Button 3 clicked
       {
         digitalWrite(LED1, 0);
         digitalWrite(LED2, 0);
@@ -425,17 +435,20 @@ void checkKnobs()
         digitalWrite(LED7, 0);
         digitalWrite(LED8, 0);
         digitalWrite(LED9, 0);
-        if (PROGRAMRead > 0 && PROGRAMRead < 512) //SAVE clicked
-        {                                         //SAVE
-        }
-        else if (PROGRAMRead >= 512) //RECALL clicked
+        if (PROGRAMRead > THRESHOLD_SAVE && PROGRAMRead < THRESHOLD_LOAD) //SAVE clicked
         {
+          //recallPatch(1);
+        }
+        else if (PROGRAMRead >= THRESHOLD_LOAD) //RECALL clicked
+        {
+          //savePatch(1);
         }
         else
         { // CHANGE MOD
         }
       }
-      else if (MODRead < 270 && MODRead >= 230) // Button 4 clicked
+
+      else if (MODRead < 215 && MODRead >= 200) // Button 4 clicked
       {
         digitalWrite(LED1, 0);
         digitalWrite(LED2, 0);
@@ -446,17 +459,20 @@ void checkKnobs()
         digitalWrite(LED7, 0);
         digitalWrite(LED8, 0);
         digitalWrite(LED9, 0);
-        if (PROGRAMRead > 0 && PROGRAMRead < 512)
-        { //SAVE
+
+        if (PROGRAMRead > THRESHOLD_SAVE && PROGRAMRead < THRESHOLD_LOAD) //SAVE clicked
+        {
+          //recallPatch(1);
         }
-        else if (PROGRAMRead >= 512)
-        { //RECALL
+        else if (PROGRAMRead >= THRESHOLD_LOAD) //RECALL clicked
+        {
+          //savePatch(1);
         }
         else
         { // CHANGE MOD
         }
       }
-      else if (MODRead < 300 && MODRead >= 270) // Button 5 clicked
+      else if (MODRead < 265 && MODRead >= 255) // Button 5 clicked
       {
         digitalWrite(LED1, 0);
         digitalWrite(LED2, 0);
@@ -467,17 +483,19 @@ void checkKnobs()
         digitalWrite(LED7, 0);
         digitalWrite(LED8, 0);
         digitalWrite(LED9, 0);
-        if (PROGRAMRead > 0 && PROGRAMRead < 512)
-        { //SAVE
+        if (PROGRAMRead > THRESHOLD_SAVE && PROGRAMRead < THRESHOLD_LOAD) //SAVE clicked
+        {
+          //recallPatch(1);
         }
-        else if (PROGRAMRead >= 512)
-        { //RECALL
+        else if (PROGRAMRead >= THRESHOLD_LOAD) //RECALL clicked
+        {
+          //savePatch(1);
         }
         else
         { // CHANGE MOD
         }
       }
-      else if (MODRead < 600 && MODRead >= 480) // Button 6 clicked
+      else if (MODRead < 340 && MODRead >= 330) // Button 6 clicked
       {
         digitalWrite(LED1, 0);
         digitalWrite(LED2, 0);
@@ -489,17 +507,19 @@ void checkKnobs()
         digitalWrite(LED8, 0);
         digitalWrite(LED9, 0);
 
-        if (PROGRAMRead > 0 && PROGRAMRead < 512)
-        { //SAVE
+        if (PROGRAMRead > THRESHOLD_SAVE && PROGRAMRead < THRESHOLD_LOAD) //SAVE clicked
+        {
+          //recallPatch(1);
         }
-        else if (PROGRAMRead >= 512)
-        { //RECALL
+        else if (PROGRAMRead >= THRESHOLD_LOAD) //RECALL clicked
+        {
+          //savePatch(1);
         }
         else
         { // CHANGE MOD
         }
       }
-      else if (MODRead < 380 && MODRead >= 300) // Button 7 clicked
+      else if (MODRead < 460 && MODRead >= 450) // Button 7 clicked
       {
         digitalWrite(LED1, 0);
         digitalWrite(LED2, 0);
@@ -510,17 +530,19 @@ void checkKnobs()
         digitalWrite(LED7, 1);
         digitalWrite(LED8, 0);
         digitalWrite(LED9, 0);
-        if (PROGRAMRead > 0 && PROGRAMRead < 512)
-        { //SAVE
+        if (PROGRAMRead > THRESHOLD_SAVE && PROGRAMRead < THRESHOLD_LOAD) //SAVE clicked
+        {
+          //recallPatch(1);
         }
-        else if (PROGRAMRead >= 512)
-        { //RECALL
+        else if (PROGRAMRead >= THRESHOLD_LOAD) //RECALL clicked
+        {
+          //savePatch(1);
         }
         else
         { // CHANGE MOD
         }
       }
-      else if (MODRead < 480 && MODRead >= 380) // Button 8 clicked
+      else if (MODRead < 700 && MODRead >= 690) // Button 8 clicked
       {
         digitalWrite(LED1, 0);
         digitalWrite(LED2, 0);
@@ -531,17 +553,19 @@ void checkKnobs()
         digitalWrite(LED7, 0);
         digitalWrite(LED8, 1);
         digitalWrite(LED9, 0);
-        if (PROGRAMRead > 0 && PROGRAMRead < 512)
-        { //SAVE
+        if (PROGRAMRead > THRESHOLD_SAVE && PROGRAMRead < THRESHOLD_LOAD) //SAVE clicked
+        {
+          //recallPatch(1);
         }
-        else if (PROGRAMRead >= 512)
-        { //RECALL
+        else if (PROGRAMRead >= THRESHOLD_LOAD) //RECALL clicked
+        {
+          //savePatch(1);
         }
         else
         { // CHANGE MOD
         }
       }
-      else if (MODRead < 900 && MODRead >= 600) // Button 9 clicked
+      else if (MODRead >= 1000) // Button 9 clicked
       {
         digitalWrite(LED1, 0);
         digitalWrite(LED2, 0);
@@ -552,11 +576,13 @@ void checkKnobs()
         digitalWrite(LED7, 0);
         digitalWrite(LED8, 0);
         digitalWrite(LED9, 1);
-        if (PROGRAMRead > 0 && PROGRAMRead < 512)
-        { //SAVE
+        if (PROGRAMRead > THRESHOLD_SAVE && PROGRAMRead < THRESHOLD_LOAD) //SAVE clicked
+        {
+          //recallPatch(1);
         }
-        else if (PROGRAMRead >= 512)
-        { //RECALL
+        else if (PROGRAMRead >= THRESHOLD_LOAD) //RECALL clicked
+        {
+          //savePatch(1);
         }
         else
         { // CHANGE MOD
@@ -574,6 +600,8 @@ void checkKnobs()
       digitalWrite(LED7, 0);
       digitalWrite(LED8, 0);
       digitalWrite(LED9, 0);
+      lcd.clear();
     }
+
   }
 }
