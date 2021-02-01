@@ -218,10 +218,10 @@ void setup()
 
   lcd.begin(16, 2);
 
-  pinMode(KNOB1, INPUT_PULLUP);          // Knob 1
-  pinMode(KNOB2, INPUT_PULLUP);          // Knob 2
-  pinMode(KNOB3, INPUT_PULLUP);          // Knob 3
-  pinMode(KNOB4, INPUT_PULLUP);          // Knob 4
+  pinMode(KNOB1, INPUT);          // Knob 1
+  pinMode(KNOB2, INPUT);          // Knob 2
+  pinMode(KNOB3, INPUT);          // Knob 3
+  pinMode(KNOB4, INPUT);          // Knob 4
   pinMode(MOD, INPUT);     // Input for modulators (osc, filter, adsr etc.)
   pinMode(PROGRAM, INPUT); // Input for program (SAVE/RECALL)
 
@@ -302,12 +302,12 @@ void loop()
 #endif
 
   checkKnobs(); //Update controls
-  //delay(10);
+  delay(50);
 }
 
 void checkKnobs()
 {
-  static int controlThresh = 10;
+  static int controlThresh = 5;
   unsigned long currentMicros = micros();
   static unsigned long LFOtime = 0;
   static int KNOB1Value = {};
@@ -321,19 +321,20 @@ void checkKnobs()
     LFOtime = currentMicros;
 
     int MODRead = analogRead(MOD);
+    
     int KNOB1Read = analogRead(KNOB1);
     int KNOB2Read = analogRead(KNOB2);
     int KNOB3Read = analogRead(KNOB3);
     int KNOB4Read = analogRead(KNOB4);
     int PROGRAMRead = analogRead(PROGRAM);
     Serial.println(MODRead);
-    if (MODRead > 50) //Any button clicked?
+    if (MODRead > 135) //Any button clicked?
     {
 
       //sprintf(buffer_secondrow, "Mod Read %d", MODRead);
       
 
-      if (MODRead < 100 && MODRead > 90 ) // Button 1 clicked
+      if (MODRead < 170 && MODRead > 135) // Button 1 clicked
       {
         digitalWrite(LED1, 1);
         digitalWrite(LED2, 0);
@@ -357,31 +358,31 @@ void checkKnobs()
         {
           if (KNOB1Read > (KNOB1Value + controlThresh) || KNOB1Read < (KNOB1Value - controlThresh))
           {
+            KNOB1Value=KNOB1Read;
             KNOB1Read = (KNOB1Read >> 3);
-            //OnControlChange(SYNTH_MIDICHANNEL, CC_Level1, KNOB1Read);
+            OnControlChange(SYNTH_MIDICHANNEL, CC_Level1, KNOB1Read);
           }
           if (KNOB2Read > (KNOB2Value + controlThresh) || KNOB2Read < (KNOB2Value - controlThresh))
           {
-            //KNOB2Value=KNOB2Read;
-            Serial.println(KNOB2Read);
+            KNOB2Value=KNOB2Read;
             KNOB2Read = (KNOB2Read >> 3);
             OnControlChange(SYNTH_MIDICHANNEL, CC_OSC1, KNOB2Read);
-            lcd.clear();
-
           }
           if (KNOB3Read > (KNOB3Value + controlThresh) || KNOB3Read < (KNOB3Value - controlThresh))
           {
+            KNOB3Value=KNOB3Read;
             KNOB3Read = (KNOB3Read >> 3);
-            //OnControlChange(SYNTH_MIDICHANNEL, CC_Octave1, KNOB3Read);
+            OnControlChange(SYNTH_MIDICHANNEL, CC_Octave1, KNOB3Read);
           }
           if (KNOB4Read > (KNOB4Value + controlThresh) || KNOB4Read < (KNOB4Value - controlThresh))
           {
+            KNOB4Value=KNOB4Read;
             KNOB4Read = (KNOB4Read >> 3);
-            //OnControlChange(SYNTH_MIDICHANNEL, CC_PWM1, KNOB4Read);
+            OnControlChange(SYNTH_MIDICHANNEL, CC_PWM1, KNOB4Read);
           }
         }
       }
-      else if (MODRead < 140 && MODRead >= 130) // Button 2 clicked
+      else if (MODRead < 200 && MODRead >= 170) // Button 2 clicked
       {
         digitalWrite(LED1, 0);
         digitalWrite(LED2, 1);
@@ -404,27 +405,31 @@ void checkKnobs()
         {
           if (KNOB1Read > (KNOB1Value + controlThresh) || KNOB1Read < (KNOB1Value - controlThresh))
           {
+            KNOB1Value=KNOB1Read;
             KNOB1Read = (KNOB1Read >> 3);
             OnControlChange(SYNTH_MIDICHANNEL, CC_Level2, KNOB1Read);
           }
           if (KNOB2Read > (KNOB2Value + controlThresh) || KNOB2Read < (KNOB2Value - controlThresh))
           {
+            KNOB2Value=KNOB2Read;
             KNOB2Read = (KNOB2Read >> 3);
             OnControlChange(SYNTH_MIDICHANNEL, CC_OSC2, KNOB2Read);
           }
           if (KNOB3Read > (KNOB3Value + controlThresh) || KNOB3Read < (KNOB3Value - controlThresh))
           {
+            KNOB3Value=KNOB3Read;
             KNOB3Read = (KNOB3Read >> 3);
             OnControlChange(SYNTH_MIDICHANNEL, CC_Octave2, KNOB3Read);
           }
           if (KNOB4Read > (KNOB4Value + controlThresh) || KNOB4Read < (KNOB4Value - controlThresh))
           {
+            KNOB4Value=KNOB4Read;
             KNOB4Read = (KNOB4Read >> 3);
             OnControlChange(SYNTH_MIDICHANNEL, CC_PWM2, KNOB4Read);
           }
         }
       }
-      else if (MODRead < 175 && MODRead >= 165) // Button 3 clicked
+      else if (MODRead < 225 && MODRead >= 200) // Button 3 clicked
       {
         digitalWrite(LED1, 0);
         digitalWrite(LED2, 0);
@@ -448,7 +453,7 @@ void checkKnobs()
         }
       }
 
-      else if (MODRead < 215 && MODRead >= 200) // Button 4 clicked
+      else if (MODRead < 255 && MODRead >= 225) // Button 4 clicked
       {
         digitalWrite(LED1, 0);
         digitalWrite(LED2, 0);
@@ -472,7 +477,7 @@ void checkKnobs()
         { // CHANGE MOD
         }
       }
-      else if (MODRead < 265 && MODRead >= 255) // Button 5 clicked
+      else if (MODRead < 300 && MODRead >= 255) // Button 5 clicked
       {
         digitalWrite(LED1, 0);
         digitalWrite(LED2, 0);
@@ -495,7 +500,7 @@ void checkKnobs()
         { // CHANGE MOD
         }
       }
-      else if (MODRead < 340 && MODRead >= 330) // Button 6 clicked
+      else if (MODRead < 370 && MODRead >= 300) // Button 6 clicked
       {
         digitalWrite(LED1, 0);
         digitalWrite(LED2, 0);
@@ -519,7 +524,7 @@ void checkKnobs()
         { // CHANGE MOD
         }
       }
-      else if (MODRead < 460 && MODRead >= 450) // Button 7 clicked
+      else if (MODRead < 500 && MODRead >= 370) // Button 7 clicked
       {
         digitalWrite(LED1, 0);
         digitalWrite(LED2, 0);
@@ -542,7 +547,7 @@ void checkKnobs()
         { // CHANGE MOD
         }
       }
-      else if (MODRead < 700 && MODRead >= 690) // Button 8 clicked
+      else if (MODRead < 800 && MODRead >= 500) // Button 8 clicked
       {
         digitalWrite(LED1, 0);
         digitalWrite(LED2, 0);

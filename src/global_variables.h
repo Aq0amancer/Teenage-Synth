@@ -75,12 +75,12 @@ char buffer_secondrow[16];
 
 //Knobs
 #define KNOB1 14 // LED1
-#define KNOB2 16 // LED1
-#define KNOB3 17 // LED1
-#define KNOB4 18 // LED1
+#define KNOB2 15 // LED1
+#define KNOB3 16 // LED1
+#define KNOB4 17 // LED1
 
 // PROGRAM CHANGE
-#define MOD 15     // Input for modulators (osc, filter, adsr etc.)
+#define MOD 18     // Input for modulators (osc, filter, adsr etc.)
 #define PROGRAM 19 // Input for program (SAVE/RECALL)
 #define THRESHOLD_SAVE 400
 #define THRESHOLD_LOAD 1000
