@@ -327,14 +327,16 @@ void checkKnobs()
     int KNOB3Read = analogRead(KNOB3);
     int KNOB4Read = analogRead(KNOB4);
     int PROGRAMRead = analogRead(PROGRAM);
-    Serial.println(MODRead);
-    if (MODRead > 135) //Any button clicked?
+
+    //Serial.println(MODRead);
+
+    if (MODRead > 119) //Any button clicked?
     {
 
       //sprintf(buffer_secondrow, "Mod Read %d", MODRead);
       
 
-      if (MODRead < 170 && MODRead > 135) // Button 1 clicked
+      if (MODRead < 129 && MODRead > 119) // Button 1 clicked
       {
         digitalWrite(LED1, 1);
         digitalWrite(LED2, 0);
@@ -382,7 +384,7 @@ void checkKnobs()
           }
         }
       }
-      else if (MODRead < 200 && MODRead >= 170) // Button 2 clicked
+      else if (MODRead < 165 && MODRead >= 155) // Button 2 clicked
       {
         digitalWrite(LED1, 0);
         digitalWrite(LED2, 1);
@@ -429,7 +431,7 @@ void checkKnobs()
           }
         }
       }
-      else if (MODRead < 225 && MODRead >= 200) // Button 3 clicked
+      else if (MODRead >= 1000) // Button 3 clicked
       {
         digitalWrite(LED1, 0);
         digitalWrite(LED2, 0);
@@ -453,7 +455,7 @@ void checkKnobs()
         }
       }
 
-      else if (MODRead < 255 && MODRead >= 225) // Button 4 clicked
+      else if (MODRead < 195 && MODRead >= 185) // Button 4 clicked
       {
         digitalWrite(LED1, 0);
         digitalWrite(LED2, 0);
@@ -477,7 +479,7 @@ void checkKnobs()
         { // CHANGE MOD
         }
       }
-      else if (MODRead < 300 && MODRead >= 255) // Button 5 clicked
+      else if (MODRead < 220 && MODRead >= 210) // Button 5 clicked
       {
         digitalWrite(LED1, 0);
         digitalWrite(LED2, 0);
@@ -500,7 +502,7 @@ void checkKnobs()
         { // CHANGE MOD
         }
       }
-      else if (MODRead < 370 && MODRead >= 300) // Button 6 clicked
+      else if (MODRead < 370 && MODRead >= 360) // Button 6 clicked
       {
         digitalWrite(LED1, 0);
         digitalWrite(LED2, 0);
@@ -524,7 +526,7 @@ void checkKnobs()
         { // CHANGE MOD
         }
       }
-      else if (MODRead < 500 && MODRead >= 370) // Button 7 clicked
+      else if (MODRead < 255 && MODRead >= 245) // Button 7 clicked
       {
         digitalWrite(LED1, 0);
         digitalWrite(LED2, 0);
@@ -547,7 +549,7 @@ void checkKnobs()
         { // CHANGE MOD
         }
       }
-      else if (MODRead < 800 && MODRead >= 500) // Button 8 clicked
+      else if (MODRead < 300 && MODRead >= 290) // Button 8 clicked
       {
         digitalWrite(LED1, 0);
         digitalWrite(LED2, 0);
@@ -570,7 +572,7 @@ void checkKnobs()
         { // CHANGE MOD
         }
       }
-      else if (MODRead >= 1000) // Button 9 clicked
+      else if (MODRead < 523 && MODRead >= 513) // Button 9 clicked
       {
         digitalWrite(LED1, 0);
         digitalWrite(LED2, 0);
