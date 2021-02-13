@@ -175,6 +175,8 @@ void OnControlChange(uint8_t channel, uint8_t control, uint8_t value)
     waveform11.amplitude(volume1);
     waveform13.amplitude(volume1);
     waveform15.amplitude(volume1);
+    sprintf(buffer_secondrow, "Level:%10f", volume1);
+    printLCD("Oscillator 1",buffer_secondrow);
     break;
   }
   case CC_OSC1: // Waveform OSC1
@@ -195,8 +197,8 @@ void OnControlChange(uint8_t channel, uint8_t control, uint8_t value)
       currentProgram1 = 6;
 
     updateWaveforms();
-    sprintf(buffer_secondrow, "Waveform: %s", waveforms[currentProgram1]);
-    printLCD("Oscillator",buffer_secondrow);
+    sprintf(buffer_secondrow, "Waveform:%7s", waveforms[currentProgram1]);
+    printLCD("Oscillator 1",buffer_secondrow);
     break;
   }
 #if SYNTH_DEBUG > 1
@@ -210,7 +212,7 @@ void OnControlChange(uint8_t channel, uint8_t control, uint8_t value)
   case CC_Octave1: // Octave OSC 1
   {
     octave1 = map(value, 0, 127, 3, -3); // Map any value between the 2 octaves -12 to 12
-    sprintf(buffer_secondrow, " Octave %d", octave1);
+    sprintf(buffer_secondrow, "Octave:%9d", octave1);
     printLCD("Oscillator 1", buffer_secondrow);
     break;
   }
@@ -234,6 +236,8 @@ void OnControlChange(uint8_t channel, uint8_t control, uint8_t value)
     waveform12.amplitude(volume2);
     waveform14.amplitude(volume2);
     waveform16.amplitude(volume2);
+    sprintf(buffer_secondrow, "Level:%10f", volume2);
+    printLCD("Oscillator 2",buffer_secondrow);
     break;
   }
   case CC_OSC2: // Waveform1 OSC2
@@ -254,7 +258,7 @@ void OnControlChange(uint8_t channel, uint8_t control, uint8_t value)
       currentProgram2 = 6;
     updateWaveforms();
     // Print LCD
-    sprintf(buffer_secondrow, "Waveform: %s", waveforms[currentProgram2]);
+    sprintf(buffer_secondrow, "Waveform:%7s", waveforms[currentProgram2]);
     printLCD("Oscillator 2", buffer_secondrow);
     break;
   }
@@ -269,7 +273,7 @@ void OnControlChange(uint8_t channel, uint8_t control, uint8_t value)
   case CC_Octave2: // Octave OSC2
   {
     octave2 = map(value, 0, 127, 3, -3); // Map any value between the 2 octaves -12 to 12
-    sprintf(buffer_secondrow, " Octave: %d", octave2);
+    sprintf(buffer_secondrow, "Octave:%9d", octave2);
     printLCD("Oscillator 2", buffer_secondrow);
     break;
   }
@@ -287,7 +291,7 @@ void OnControlChange(uint8_t channel, uint8_t control, uint8_t value)
   {
     LFO1_Level = 0.5 - value / 256.;
     updateLFO1();
-    sprintf(buffer_secondrow, "Level: %f", LFO1_Level);
+    sprintf(buffer_secondrow, "Level:%10f", LFO1_Level);
     printLCD("Pitch LFO", buffer_secondrow);
     break;
   }
@@ -309,7 +313,7 @@ void OnControlChange(uint8_t channel, uint8_t control, uint8_t value)
       currentLFOProgram1 = 6;
     updateLFO1();
     //sprintf(buffer_secondrow, "Waveform: %s", waveforms[currentLFOProgram1]);
-    sprintf(buffer_secondrow, "Waveform");
+    sprintf(buffer_secondrow, "Waveform:%7s", waveforms[currentLFOProgram1]);
     printLCD("Pitch LFO", buffer_secondrow);
 
     break;
@@ -318,7 +322,7 @@ void OnControlChange(uint8_t channel, uint8_t control, uint8_t value)
   {
     LFO1_Rate = 8.0 - value / 16.; // Rate 1 - 8 Hz
     updateLFO1();
-    sprintf(buffer_secondrow, "Rate: %f Hz", LFO1_Rate);
+    sprintf(buffer_secondrow, "Rate:%8f Hz", LFO1_Rate);
     printLCD("Pitch LFO", buffer_secondrow);
     break;
   }
@@ -328,16 +332,30 @@ void OnControlChange(uint8_t channel, uint8_t control, uint8_t value)
   {
     LFO2_Level = 0.5 - value / 256.;
     //printLCD("Filter LFO", "Level", (char)LFO2_Level, "");
+    sprintf(buffer_secondrow, "Level:%10f", LFO2_Level);
+    printLCD("Filter LFO", buffer_secondrow);
     updateLFO2();
     break;
   }
   case CC_LFO2: // LFO2 waveform 1
   {
-    if (value > 0)
-    {
+    if (value <= 18)
       currentLFOProgram2 = 0;
-      updateLFO2();
-    }
+    else if (value > 18 && value <= 36)
+      currentLFOProgram2 = 1;
+    else if (value > 36 && value <= 54)
+      currentLFOProgram2 = 2;
+    else if (value > 54 && value <= 72)
+      currentLFOProgram2 = 3;
+    else if (value > 72 && value <= 90)
+      currentLFOProgram2 = 4;
+    else if (value > 90 && value <= 108)
+      currentLFOProgram2 = 5;
+    else if (value > 108 && value <= 127)
+      currentLFOProgram2 = 6;
+    updateLFO2();
+    sprintf(buffer_secondrow, "Waveform:%7s", waveforms[currentLFOProgram2]);
+    printLCD("Filter LFO", buffer_secondrow);
     break;
   }
   case CC_LFO_Rate2: // LFO2 Rate
@@ -345,6 +363,8 @@ void OnControlChange(uint8_t channel, uint8_t control, uint8_t value)
     LFO2_Rate = 16.0 - value / 8.; // Rate 1 - 4 Hz
     updateLFO2();
     //printLCD("Filter LFO", "Rate", (char)LFO2_Rate, "Hz");
+    sprintf(buffer_secondrow, "Rate:%8f Hz", LFO1_Rate);
+    printLCD("Filter LFO", buffer_secondrow);
     break;
   }
     /////////////// MASTER ////////////////////////////////////////////
@@ -401,8 +421,8 @@ void OnControlChange(uint8_t channel, uint8_t control, uint8_t value)
     noise = (127 - value) / 127;
     updateNoise();
     //char noise_value[4];
-    //sprintf(noise_value, "%f", noise);
-    //printLCD("Master", "Noise", (char)noise, "");
+    sprintf(buffer_secondrow, "%4f", noise);
+    printLCD("White Noise:", buffer_secondrow);
     break;
   }
     //////////////// AMP Envelope/////////////////////////////////////////
@@ -412,6 +432,8 @@ void OnControlChange(uint8_t channel, uint8_t control, uint8_t value)
     envAttack = envelopeMax - value * envelopeMax / 127.;
     updateEnvelope();
     //printLCD("Amp", "Attack", (char)envAttack, "ms");
+    sprintf(buffer_secondrow, "Attack:%6f ms", envAttack);
+    printLCD("AMP", buffer_secondrow);
     break;
   }
   case CC_Decay: // decay
@@ -419,6 +441,8 @@ void OnControlChange(uint8_t channel, uint8_t control, uint8_t value)
     envDecay = envelopeMax - value * envelopeMax / 127.;
     updateEnvelope();
     //printLCD("Amp", "Decay", (char)envDecay, "ms");
+    sprintf(buffer_secondrow, "Decay:%7f ms", envDecay);
+    printLCD("AMP", buffer_secondrow);
     break;
   }
   case CC_Sustain: // sustain
@@ -426,6 +450,8 @@ void OnControlChange(uint8_t channel, uint8_t control, uint8_t value)
     envSustain = 1.00 - value / 127.;
     updateEnvelope();
     //printLCD("Amp", "Sustain", (char)envSustain, "");
+    sprintf(buffer_secondrow, "Sustain:%5f ms", envSustain);
+    printLCD("AMP", buffer_secondrow);
     break;
   }
   case CC_Release: // release
@@ -433,6 +459,8 @@ void OnControlChange(uint8_t channel, uint8_t control, uint8_t value)
     envRelease = envelopeMax - value * envelopeMax / 127.;
     updateEnvelope();
     //printLCD("Amp", "Release", (char)envRelease, "ms");
+    sprintf(buffer_secondrow, "Release:%5f ms", envRelease);
+    printLCD("AMP", buffer_secondrow);
     break;
   }
     //////////////// FILTER Envelope/////////////////////////////////////////
@@ -442,6 +470,8 @@ void OnControlChange(uint8_t channel, uint8_t control, uint8_t value)
     FiltAttack = envelopeMax - value * envelopeMax / 127.;
     updateFiltEnvelope();
     //printLCD("Filter", "Attack", (char)FiltAttack, "ms");
+    sprintf(buffer_secondrow, "Attack:%6f ms", FiltAttack);
+    printLCD("Filter", buffer_secondrow);
     break;
   }
   case CC_Filter_Decay: // decay
@@ -449,6 +479,8 @@ void OnControlChange(uint8_t channel, uint8_t control, uint8_t value)
     FiltDecay = envelopeMax - value * envelopeMax / 127.;
     updateFiltEnvelope();
     //printLCD("Filter", "Decay", (char)FiltDecay, "ms");
+    sprintf(buffer_secondrow, "Decay:%7f ms", FiltDecay);
+    printLCD("Filter", buffer_secondrow);
     break;
   }
   case CC_Filter_Sustain: // sustain
@@ -456,6 +488,8 @@ void OnControlChange(uint8_t channel, uint8_t control, uint8_t value)
     FiltSustain = 1.00 - value / 127.;
     updateFiltEnvelope();
     //printLCD("Filter", "Sustain", (char)FiltSustain, "");
+    sprintf(buffer_secondrow, "Sustain:%5f ms", FiltSustain);
+    printLCD("Filter", buffer_secondrow);
     break;
   }
   case CC_Filter_Release: // release
@@ -463,6 +497,8 @@ void OnControlChange(uint8_t channel, uint8_t control, uint8_t value)
     FiltRelease = envelopeMax - value * envelopeMax / 127.;
     updateFiltEnvelope();
     //printLCD("Filter", "Release", (char)FiltRelease, "ms");
+    sprintf(buffer_secondrow, "Release:%5f ms", FiltRelease);
+    printLCD("Filter", buffer_secondrow);
     break;
   }
     //////////////// FILTER ///////////////////////////////////////////
@@ -485,6 +521,8 @@ void OnControlChange(uint8_t channel, uint8_t control, uint8_t value)
     }
     updateFilter();
     //printLCD("Filter", "Cutoff", (char)filtFreq, "Hz");
+    sprintf(buffer_secondrow, "Cutoff:%6f Hz", filtFreq);
+    printLCD("Filter", buffer_secondrow);
     break;
   }
   case CC_Filter_Resonance: // filter resonance
@@ -492,6 +530,8 @@ void OnControlChange(uint8_t channel, uint8_t control, uint8_t value)
     filtReso = 5.0 - value * 4.1 / 127. + 0.9;
     updateFilter();
     //printLCD("Filter", "Resonance", (char)filtReso, "");
+    sprintf(buffer_secondrow, "Resonance:%6f", filtReso);
+    printLCD("Filter", buffer_secondrow);
     break;
   }
   case CC_Filter_Attenuation: // filter attenuation
@@ -499,24 +539,28 @@ void OnControlChange(uint8_t channel, uint8_t control, uint8_t value)
     filtAtt = 1.00 - value / 127.;
     updateFilterMode();
     //printLCD("Filter", "Level", (char)filtAtt, "");
+    sprintf(buffer_secondrow, "Attenuate:%6f", filtAtt);
+    printLCD("Filter", buffer_secondrow);
     break;
   }
-  case CC_Filter_Mode: // filter mode
+  case CC_Filter_Mode: // filter mode TO DO
   {
     filtermode = map(value, 0, 127, 0, 2);
     updateFilterMode();
+    
     switch (filtermode)
     {
     case 0:
-      //printLCD("Filter", "Mode", "Low", "");
+      sprintf(buffer_secondrow, "Mode:%11s" ,"Lowpas");
       break;
     case 1:
-      //printLCD("Filter", "Mode", "Band", "");
+      sprintf(buffer_secondrow, "Mode:%11s","Bandpass");
       break;
     case 2:
-      //printLCD("Filter", "Mode", "High", "");
+      sprintf(buffer_secondrow, "Mode:%11s","Highpass");
       break;
     }
+    printLCD("Filter", buffer_secondrow);
     break;
   }
     ////////////////////////////////////////////////////////////////////////////
@@ -526,6 +570,8 @@ void OnControlChange(uint8_t channel, uint8_t control, uint8_t value)
     LFO_PWM_Freq = 2.00 - value / 64.;
     updatePWM();
     //printLCD("Osc Control", "PWM Rate", (char)LFO_PWM_Freq, "Hz");
+    sprintf(buffer_secondrow, "Frequency:%6f", LFO_PWM_Freq);
+    printLCD("PWM", buffer_secondrow);
     break;
   }
   case CC_Envelope_Mode: // envelope mode
@@ -539,11 +585,16 @@ void OnControlChange(uint8_t channel, uint8_t control, uint8_t value)
 
   case CC_Flanger_On: // flanger toggle button
   {
-    if (value > 0)
+    if (value > 0){
       flangerOn = true;
-    else
+      sprintf(buffer_secondrow, "On");
+    }
+    else{
       flangerOn = false;
+      sprintf(buffer_secondrow, "Off");
+    }
     updateFlanger();
+    printLCD("Flanger", buffer_secondrow);
     break;
   }
   case CC_Flanger_Offset: // flanger offset
@@ -551,6 +602,8 @@ void OnControlChange(uint8_t channel, uint8_t control, uint8_t value)
     flangerOffset = DELAY_LENGTH / (4 * map(value, 0, 127, 4, 1));
     updateFlanger();
     //printLCD("Flanger", "Offset", (char)flangerOffset, "");
+    sprintf(buffer_secondrow, "Offset:%9d", flangerOffset);
+    printLCD("Flanger", buffer_secondrow);
     break;
   }
   case CC_Flanger_Depth: // flanger depth
@@ -558,6 +611,8 @@ void OnControlChange(uint8_t channel, uint8_t control, uint8_t value)
     flangerDepth = DELAY_LENGTH / (4 * map(value, 0, 127, 4, 1));
     updateFlanger();
     //printLCD("Flanger", "Depth", (char)flangerDepth, "");
+    sprintf(buffer_secondrow, "Depth:%10d", flangerDepth);
+    printLCD("Flanger", buffer_secondrow);
     break;
   }
   case CC_Flanger_Fine: // flanger coarse frequency
@@ -565,6 +620,8 @@ void OnControlChange(uint8_t channel, uint8_t control, uint8_t value)
     flangerFreqCoarse = value / 127.;
     updateFlanger();
     //printLCD("Flanger", "Coarse", (char)flangerFreqCoarse, "");
+    sprintf(buffer_secondrow, "Fine:%11f", flangerFreqCoarse);
+    printLCD("Flanger", buffer_secondrow);
     break;
   }
     ///////////// UNDEFINED ////////////////////////////////////////////////////////////////////

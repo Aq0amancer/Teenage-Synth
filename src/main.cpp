@@ -431,7 +431,7 @@ void checkKnobs()
           }
         }
       }
-      else if (MODRead >= 1000) // Button 3 clicked
+      else if (MODRead >= 1000) // Button 3 clicked MISC
       {
         digitalWrite(LED1, 0);
         digitalWrite(LED2, 0);
@@ -452,6 +452,30 @@ void checkKnobs()
         }
         else
         { // CHANGE MOD
+          if (KNOB1Read > (KNOB1Value + controlThresh) || KNOB1Read < (KNOB1Value - controlThresh))
+          {
+            KNOB1Value=KNOB1Read;
+            KNOB1Read = (KNOB1Read >> 3);
+            OnControlChange(SYNTH_MIDICHANNEL, CC_Filter_Frequency, KNOB1Read);
+          }
+          if (KNOB2Read > (KNOB2Value + controlThresh) || KNOB2Read < (KNOB2Value - controlThresh))
+          {
+            KNOB2Value=KNOB2Read;
+            KNOB2Read = (KNOB2Read >> 3);
+            OnControlChange(SYNTH_MIDICHANNEL, CC_Filter_Resonance, KNOB2Read);
+          }
+          if (KNOB3Read > (KNOB3Value + controlThresh) || KNOB3Read < (KNOB3Value - controlThresh))
+          {
+            KNOB3Value=KNOB3Read;
+            KNOB3Read = (KNOB3Read >> 3);
+            OnControlChange(SYNTH_MIDICHANNEL, CC_Filter_Mode, KNOB3Read);
+          }
+          if (KNOB4Read > (KNOB4Value + controlThresh) || KNOB4Read < (KNOB4Value - controlThresh))
+          {
+            KNOB4Value=KNOB4Read;
+            KNOB4Read = (KNOB4Read >> 3);
+            OnControlChange(SYNTH_MIDICHANNEL, CC_Filter_Attenuation, KNOB4Read);
+          }
         }
       }
 
@@ -477,6 +501,30 @@ void checkKnobs()
         }
         else
         { // CHANGE MOD
+          if (KNOB1Read > (KNOB1Value + controlThresh) || KNOB1Read < (KNOB1Value - controlThresh))
+          {
+            KNOB1Value=KNOB1Read;
+            KNOB1Read = (KNOB1Read >> 3);
+            OnControlChange(SYNTH_MIDICHANNEL, CC_LFO_Level1, KNOB1Read);
+          }
+          if (KNOB2Read > (KNOB2Value + controlThresh) || KNOB2Read < (KNOB2Value - controlThresh))
+          {
+            KNOB2Value=KNOB2Read;
+            KNOB2Read = (KNOB2Read >> 3);
+            OnControlChange(SYNTH_MIDICHANNEL, CC_LFO1, KNOB2Read);
+          }
+          if (KNOB3Read > (KNOB3Value + controlThresh) || KNOB3Read < (KNOB3Value - controlThresh))
+          {
+            KNOB3Value=KNOB3Read;
+            KNOB3Read = (KNOB3Read >> 3);
+            OnControlChange(SYNTH_MIDICHANNEL, CC_LFO1, KNOB3Read);
+          }
+          if (KNOB4Read > (KNOB4Value + controlThresh) || KNOB4Read < (KNOB4Value - controlThresh))
+          {
+            KNOB4Value=KNOB4Read;
+            KNOB4Read = (KNOB4Read >> 3);
+            OnControlChange(SYNTH_MIDICHANNEL, CC_LFO_Rate1, KNOB4Read);
+          }
         }
       }
       else if (MODRead < 220 && MODRead >= 210) // Button 5 clicked
@@ -500,6 +548,30 @@ void checkKnobs()
         }
         else
         { // CHANGE MOD
+          if (KNOB1Read > (KNOB1Value + controlThresh) || KNOB1Read < (KNOB1Value - controlThresh))
+          {
+            KNOB1Value=KNOB1Read;
+            KNOB1Read = (KNOB1Read >> 3);
+            OnControlChange(SYNTH_MIDICHANNEL, CC_LFO_Level2, KNOB1Read);
+          }
+          if (KNOB2Read > (KNOB2Value + controlThresh) || KNOB2Read < (KNOB2Value - controlThresh))
+          {
+            KNOB2Value=KNOB2Read;
+            KNOB2Read = (KNOB2Read >> 3);
+            OnControlChange(SYNTH_MIDICHANNEL, CC_LFO2, KNOB2Read);
+          }
+          if (KNOB3Read > (KNOB3Value + controlThresh) || KNOB3Read < (KNOB3Value - controlThresh))
+          {
+            KNOB3Value=KNOB3Read;
+            KNOB3Read = (KNOB3Read >> 3);
+            OnControlChange(SYNTH_MIDICHANNEL, CC_LFO2, KNOB3Read);
+          }
+          if (KNOB4Read > (KNOB4Value + controlThresh) || KNOB4Read < (KNOB4Value - controlThresh))
+          {
+            KNOB4Value=KNOB4Read;
+            KNOB4Read = (KNOB4Read >> 3);
+            OnControlChange(SYNTH_MIDICHANNEL, CC_LFO_Rate2, KNOB4Read);
+          }
         }
       }
       else if (MODRead < 370 && MODRead >= 360) // Button 6 clicked
@@ -524,6 +596,30 @@ void checkKnobs()
         }
         else
         { // CHANGE MOD
+          if (KNOB1Read > (KNOB1Value + controlThresh) || KNOB1Read < (KNOB1Value - controlThresh))
+          {
+            KNOB1Value=KNOB1Read;
+            KNOB1Read = (KNOB1Read >> 3);
+            OnControlChange(SYNTH_MIDICHANNEL, CC_Filter_Attack, KNOB1Read);
+          }
+          if (KNOB2Read > (KNOB2Value + controlThresh) || KNOB2Read < (KNOB2Value - controlThresh))
+          {
+            KNOB2Value=KNOB2Read;
+            KNOB2Read = (KNOB2Read >> 3);
+            OnControlChange(SYNTH_MIDICHANNEL, CC_Filter_Decay, KNOB2Read);
+          }
+          if (KNOB3Read > (KNOB3Value + controlThresh) || KNOB3Read < (KNOB3Value - controlThresh))
+          {
+            KNOB3Value=KNOB3Read;
+            KNOB3Read = (KNOB3Read >> 3);
+            OnControlChange(SYNTH_MIDICHANNEL, CC_Filter_Sustain, KNOB3Read);
+          }
+          if (KNOB4Read > (KNOB4Value + controlThresh) || KNOB4Read < (KNOB4Value - controlThresh))
+          {
+            KNOB4Value=KNOB4Read;
+            KNOB4Read = (KNOB4Read >> 3);
+            OnControlChange(SYNTH_MIDICHANNEL, CC_Filter_Release, KNOB4Read);
+          }
         }
       }
       else if (MODRead < 255 && MODRead >= 245) // Button 7 clicked
@@ -547,6 +643,30 @@ void checkKnobs()
         }
         else
         { // CHANGE MOD
+          if (KNOB1Read > (KNOB1Value + controlThresh) || KNOB1Read < (KNOB1Value - controlThresh))
+          {
+            KNOB1Value=KNOB1Read;
+            KNOB1Read = (KNOB1Read >> 3);
+            OnControlChange(SYNTH_MIDICHANNEL, CC_Attack, KNOB1Read);
+          }
+          if (KNOB2Read > (KNOB2Value + controlThresh) || KNOB2Read < (KNOB2Value - controlThresh))
+          {
+            KNOB2Value=KNOB2Read;
+            KNOB2Read = (KNOB2Read >> 3);
+            OnControlChange(SYNTH_MIDICHANNEL, CC_Decay, KNOB2Read);
+          }
+          if (KNOB3Read > (KNOB3Value + controlThresh) || KNOB3Read < (KNOB3Value - controlThresh))
+          {
+            KNOB3Value=KNOB3Read;
+            KNOB3Read = (KNOB3Read >> 3);
+            OnControlChange(SYNTH_MIDICHANNEL, CC_Sustain, KNOB3Read);
+          }
+          if (KNOB4Read > (KNOB4Value + controlThresh) || KNOB4Read < (KNOB4Value - controlThresh))
+          {
+            KNOB4Value=KNOB4Read;
+            KNOB4Read = (KNOB4Read >> 3);
+            OnControlChange(SYNTH_MIDICHANNEL, CC_Release, KNOB4Read);
+          }
         }
       }
       else if (MODRead < 300 && MODRead >= 290) // Button 8 clicked
@@ -593,6 +713,30 @@ void checkKnobs()
         }
         else
         { // CHANGE MOD
+          if (KNOB1Read > (KNOB1Value + controlThresh) || KNOB1Read < (KNOB1Value - controlThresh))
+          {
+            KNOB1Value=KNOB1Read;
+            KNOB1Read = (KNOB1Read >> 3);
+            OnControlChange(SYNTH_MIDICHANNEL, CC_Volume, KNOB1Read);
+          }
+          if (KNOB2Read > (KNOB2Value + controlThresh) || KNOB2Read < (KNOB2Value - controlThresh))
+          {
+            KNOB2Value=KNOB2Read;
+            KNOB2Read = (KNOB2Read >> 3);
+            OnControlChange(SYNTH_MIDICHANNEL, CC_Pan, KNOB2Read);
+          }
+          if (KNOB3Read > (KNOB3Value + controlThresh) || KNOB3Read < (KNOB3Value - controlThresh))
+          {
+            KNOB3Value=KNOB3Read;
+            KNOB3Read = (KNOB3Read >> 3);
+            OnControlChange(SYNTH_MIDICHANNEL, CC_Noise, KNOB3Read);
+          }
+          if (KNOB4Read > (KNOB4Value + controlThresh) || KNOB4Read < (KNOB4Value - controlThresh))
+          {
+            KNOB4Value=KNOB4Read;
+            KNOB4Read = (KNOB4Read >> 3);
+            OnControlChange(SYNTH_MIDICHANNEL, CC_LFO_Rate2, KNOB4Read);
+          }
         }
       }
     }
