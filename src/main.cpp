@@ -690,6 +690,30 @@ void checkKnobs()
         }
         else
         { // CHANGE MOD
+          if (KNOB1Read > (KNOB1Value + controlThresh) || KNOB1Read < (KNOB1Value - controlThresh))
+          {
+            KNOB1Value=KNOB1Read;
+            KNOB1Read = (KNOB1Read >> 3);
+            OnControlChange(SYNTH_MIDICHANNEL, CC_Flanger_On, KNOB1Read);
+          }
+          if (KNOB2Read > (KNOB2Value + controlThresh) || KNOB2Read < (KNOB2Value - controlThresh))
+          {
+            KNOB2Value=KNOB2Read;
+            KNOB2Read = (KNOB2Read >> 3);
+            OnControlChange(SYNTH_MIDICHANNEL, CC_Flanger_Offset, KNOB2Read);
+          }
+          if (KNOB3Read > (KNOB3Value + controlThresh) || KNOB3Read < (KNOB3Value - controlThresh))
+          {
+            KNOB3Value=KNOB3Read;
+            KNOB3Read = (KNOB3Read >> 3);
+            OnControlChange(SYNTH_MIDICHANNEL, CC_Flanger_Depth, KNOB3Read);
+          }
+          if (KNOB4Read > (KNOB4Value + controlThresh) || KNOB4Read < (KNOB4Value - controlThresh))
+          {
+            KNOB4Value=KNOB4Read;
+            KNOB4Read = (KNOB4Read >> 3);
+            OnControlChange(SYNTH_MIDICHANNEL, CC_Flanger_Fine, KNOB4Read);
+          }
         }
       }
       else if (MODRead < 523 && MODRead >= 513) // Button 9 clicked
@@ -717,25 +741,25 @@ void checkKnobs()
           {
             KNOB1Value=KNOB1Read;
             KNOB1Read = (KNOB1Read >> 3);
-            OnControlChange(SYNTH_MIDICHANNEL, CC_Volume, KNOB1Read);
+            OnControlChange(SYNTH_MIDICHANNEL, CC_Flanger_On, KNOB1Read);
           }
           if (KNOB2Read > (KNOB2Value + controlThresh) || KNOB2Read < (KNOB2Value - controlThresh))
           {
             KNOB2Value=KNOB2Read;
             KNOB2Read = (KNOB2Read >> 3);
-            OnControlChange(SYNTH_MIDICHANNEL, CC_Pan, KNOB2Read);
+            OnControlChange(SYNTH_MIDICHANNEL, CC_Flanger_Offset, KNOB2Read);
           }
           if (KNOB3Read > (KNOB3Value + controlThresh) || KNOB3Read < (KNOB3Value - controlThresh))
           {
             KNOB3Value=KNOB3Read;
             KNOB3Read = (KNOB3Read >> 3);
-            OnControlChange(SYNTH_MIDICHANNEL, CC_Noise, KNOB3Read);
+            OnControlChange(SYNTH_MIDICHANNEL, CC_Flanger_Depth, KNOB3Read);
           }
           if (KNOB4Read > (KNOB4Value + controlThresh) || KNOB4Read < (KNOB4Value - controlThresh))
           {
             KNOB4Value=KNOB4Read;
             KNOB4Read = (KNOB4Read >> 3);
-            OnControlChange(SYNTH_MIDICHANNEL, CC_LFO_Rate2, KNOB4Read);
+            OnControlChange(SYNTH_MIDICHANNEL, CC_Flanger_Fine, KNOB4Read);
           }
         }
       }
