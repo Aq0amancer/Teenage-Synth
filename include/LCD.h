@@ -4,7 +4,7 @@
 #include <string>
 
 // initialize the library with the numbers of the interface pins
-LiquidCrystal lcd(7, 8, 9, 10, 11, 12);
+LiquidCrystal lcd(2, 3, 4, 5, 6, 9);
 void printLCD(const String& top_row_msg, const String& bottom_row_msg);
 
 void printLCD(const String& top_row_msg, const String& bottom_row_msg)

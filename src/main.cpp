@@ -225,25 +225,25 @@ void setup()
   pinMode(MOD, INPUT);     // Input for modulators (osc, filter, adsr etc.)
   pinMode(PROGRAM, INPUT); // Input for program (SAVE/RECALL)
 
-  pinMode(LED1, OUTPUT); // LED1
-  pinMode(LED2, OUTPUT); // LED2
-  pinMode(LED3, OUTPUT); // LED3
-  pinMode(LED4, OUTPUT); // LED4
-  pinMode(LED5, OUTPUT); // LED5
-  pinMode(LED6, OUTPUT); // LED6
-  pinMode(LED7, OUTPUT); // LED7
-  pinMode(LED8, OUTPUT); // LED8
-  pinMode(LED9, OUTPUT); // LED9
+  //pinMode(LED1, OUTPUT); // LED1
+  //pinMode(LED2, OUTPUT); // LED2
+  //pinMode(LED3, OUTPUT); // LED3
+  //pinMode(LED4, OUTPUT); // LED4
+  //pinMode(LED5, OUTPUT); // LED5
+  //pinMode(LED6, OUTPUT); // LED6
+  //pinMode(LED7, OUTPUT); // LED7
+  //pinMode(LED8, OUTPUT); // LED8
+  //pinMode(LED9, OUTPUT); // LED9
 
-  digitalWrite(LED1, 0);
-  digitalWrite(LED2, 0);
-  digitalWrite(LED3, 0);
-  digitalWrite(LED4, 0);
-  digitalWrite(LED5, 0);
-  digitalWrite(LED6, 0);
-  digitalWrite(LED7, 0);
-  digitalWrite(LED8, 0);
-  digitalWrite(LED9, 0);
+  ////1, 0);
+  ////2, 0);
+  ////3, 0);
+  ////4, 0);
+  ////5, 0);
+  ////6, 0);
+  ////7, 0);
+  ////8, 0);
+  ////9, 0);
 
 
 #if SYNTH_DEBUG > 0
@@ -307,7 +307,7 @@ void loop()
 
 void checkKnobs()
 {
-  static int controlThresh = 5;
+  static int controlThresh = 30;
   unsigned long currentMicros = micros();
   static unsigned long LFOtime = 0;
   static int KNOB1Value = {};
@@ -328,25 +328,25 @@ void checkKnobs()
     int KNOB4Read = analogRead(KNOB4);
     int PROGRAMRead = analogRead(PROGRAM);
 
-    //Serial.println(MODRead);
+    //Serial.println(KNOB4Read);
 
-    if (MODRead > 119) //Any button clicked?
+    if (MODRead > 50) //Any button clicked?
     {
 
       //sprintf(buffer_secondrow, "Mod Read %d", MODRead);
       
 
-      if (MODRead < 129 && MODRead > 119) // Button 1 clicked
+      if (MODRead < 70 && MODRead > 50) // Button 1 clicked
       {
-        digitalWrite(LED1, 1);
-        digitalWrite(LED2, 0);
-        digitalWrite(LED3, 0);
-        digitalWrite(LED4, 0);
-        digitalWrite(LED5, 0);
-        digitalWrite(LED6, 0);
-        digitalWrite(LED7, 0);
-        digitalWrite(LED8, 0);
-        digitalWrite(LED9, 0);
+        //1, 1);
+        //2, 0);
+        //3, 0);
+        //4, 0);
+        //5, 0);
+        //6, 0);
+        //7, 0);
+        //8, 0);
+        //9, 0);
 
         if (PROGRAMRead > THRESHOLD_SAVE && PROGRAMRead < THRESHOLD_LOAD) //SAVE clicked
         {
@@ -384,17 +384,17 @@ void checkKnobs()
           }
         }
       }
-      else if (MODRead < 165 && MODRead >= 155) // Button 2 clicked
+      else if (MODRead < 100 && MODRead >= 80) // Button 2 clicked
       {
-        digitalWrite(LED1, 0);
-        digitalWrite(LED2, 1);
-        digitalWrite(LED3, 0);
-        digitalWrite(LED4, 0);
-        digitalWrite(LED5, 0);
-        digitalWrite(LED6, 0);
-        digitalWrite(LED7, 0);
-        digitalWrite(LED8, 0);
-        digitalWrite(LED9, 0);
+        //1, 0);
+        //2, 1);
+        //3, 0);
+        //4, 0);
+        //5, 0);
+        //6, 0);
+        //7, 0);
+        //8, 0);
+        //9, 0);
         if (PROGRAMRead > THRESHOLD_SAVE && PROGRAMRead < THRESHOLD_LOAD) //SAVE clicked
         {
           //recallPatch(1);
@@ -433,15 +433,15 @@ void checkKnobs()
       }
       else if (MODRead >= 1000) // Button 3 clicked MISC
       {
-        digitalWrite(LED1, 0);
-        digitalWrite(LED2, 0);
-        digitalWrite(LED3, 1);
-        digitalWrite(LED4, 0);
-        digitalWrite(LED5, 0);
-        digitalWrite(LED6, 0);
-        digitalWrite(LED7, 0);
-        digitalWrite(LED8, 0);
-        digitalWrite(LED9, 0);
+        //1, 0);
+        //2, 0);
+        //3, 1);
+        //4, 0);
+        //5, 0);
+        //6, 0);
+        //7, 0);
+        //8, 0);
+        //9, 0);
         if (PROGRAMRead > THRESHOLD_SAVE && PROGRAMRead < THRESHOLD_LOAD) //SAVE clicked
         {
           //recallPatch(1);
@@ -479,17 +479,17 @@ void checkKnobs()
         }
       }
 
-      else if (MODRead < 195 && MODRead >= 185) // Button 4 clicked
+      else if (MODRead < 120 && MODRead >= 100) // Button 4 clicked
       {
-        digitalWrite(LED1, 0);
-        digitalWrite(LED2, 0);
-        digitalWrite(LED3, 0);
-        digitalWrite(LED4, 1);
-        digitalWrite(LED5, 0);
-        digitalWrite(LED6, 0);
-        digitalWrite(LED7, 0);
-        digitalWrite(LED8, 0);
-        digitalWrite(LED9, 0);
+        //1, 0);
+        //2, 0);
+        //3, 0);
+        //4, 1);
+        //5, 0);
+        //6, 0);
+        //7, 0);
+        //8, 0);
+        //9, 0);
 
         if (PROGRAMRead > THRESHOLD_SAVE && PROGRAMRead < THRESHOLD_LOAD) //SAVE clicked
         {
@@ -527,17 +527,17 @@ void checkKnobs()
           }
         }
       }
-      else if (MODRead < 220 && MODRead >= 210) // Button 5 clicked
+      else if (MODRead < 150 && MODRead >= 120) // Button 5 clicked
       {
-        digitalWrite(LED1, 0);
-        digitalWrite(LED2, 0);
-        digitalWrite(LED3, 0);
-        digitalWrite(LED4, 0);
-        digitalWrite(LED5, 1);
-        digitalWrite(LED6, 0);
-        digitalWrite(LED7, 0);
-        digitalWrite(LED8, 0);
-        digitalWrite(LED9, 0);
+        //1, 0);
+        //2, 0);
+        //3, 0);
+        //4, 0);
+        //5, 1);
+        //6, 0);
+        //7, 0);
+        //8, 0);
+        //9, 0);
         if (PROGRAMRead > THRESHOLD_SAVE && PROGRAMRead < THRESHOLD_LOAD) //SAVE clicked
         {
           //recallPatch(1);
@@ -574,17 +574,17 @@ void checkKnobs()
           }
         }
       }
-      else if (MODRead < 370 && MODRead >= 360) // Button 6 clicked
+      else if (MODRead < 320 && MODRead >= 290) // Button 6 clicked
       {
-        digitalWrite(LED1, 0);
-        digitalWrite(LED2, 0);
-        digitalWrite(LED3, 0);
-        digitalWrite(LED4, 0);
-        digitalWrite(LED5, 0);
-        digitalWrite(LED6, 1);
-        digitalWrite(LED7, 0);
-        digitalWrite(LED8, 0);
-        digitalWrite(LED9, 0);
+        //1, 0);
+        //2, 0);
+        //3, 0);
+        //4, 0);
+        //5, 0);
+        //6, 1);
+        //7, 0);
+        //8, 0);
+        //9, 0);
 
         if (PROGRAMRead > THRESHOLD_SAVE && PROGRAMRead < THRESHOLD_LOAD) //SAVE clicked
         {
@@ -622,17 +622,17 @@ void checkKnobs()
           }
         }
       }
-      else if (MODRead < 255 && MODRead >= 245) // Button 7 clicked
+      else if (MODRead < 190 && MODRead >= 165) // Button 7 clicked
       {
-        digitalWrite(LED1, 0);
-        digitalWrite(LED2, 0);
-        digitalWrite(LED3, 0);
-        digitalWrite(LED4, 0);
-        digitalWrite(LED5, 0);
-        digitalWrite(LED6, 0);
-        digitalWrite(LED7, 1);
-        digitalWrite(LED8, 0);
-        digitalWrite(LED9, 0);
+        //1, 0);
+        //2, 0);
+        //3, 0);
+        //4, 0);
+        //5, 0);
+        //6, 0);
+        //7, 1);
+        //8, 0);
+        //9, 0);
         if (PROGRAMRead > THRESHOLD_SAVE && PROGRAMRead < THRESHOLD_LOAD) //SAVE clicked
         {
           //recallPatch(1);
@@ -669,17 +669,17 @@ void checkKnobs()
           }
         }
       }
-      else if (MODRead < 300 && MODRead >= 290) // Button 8 clicked
+      else if (MODRead < 235 && MODRead >= 215) // Button 8 clicked
       {
-        digitalWrite(LED1, 0);
-        digitalWrite(LED2, 0);
-        digitalWrite(LED3, 0);
-        digitalWrite(LED4, 0);
-        digitalWrite(LED5, 0);
-        digitalWrite(LED6, 0);
-        digitalWrite(LED7, 0);
-        digitalWrite(LED8, 1);
-        digitalWrite(LED9, 0);
+        //1, 0);
+        //2, 0);
+        //3, 0);
+        //4, 0);
+        //5, 0);
+        //6, 0);
+        //7, 0);
+        //8, 1);
+        //9, 0);
         if (PROGRAMRead > THRESHOLD_SAVE && PROGRAMRead < THRESHOLD_LOAD) //SAVE clicked
         {
           //recallPatch(1);
@@ -716,17 +716,17 @@ void checkKnobs()
           }
         }
       }
-      else if (MODRead < 523 && MODRead >= 513) // Button 9 clicked
+      else if (MODRead < 490 && MODRead >= 465) // Button 9 clicked
       {
-        digitalWrite(LED1, 0);
-        digitalWrite(LED2, 0);
-        digitalWrite(LED3, 0);
-        digitalWrite(LED4, 0);
-        digitalWrite(LED5, 0);
-        digitalWrite(LED6, 0);
-        digitalWrite(LED7, 0);
-        digitalWrite(LED8, 0);
-        digitalWrite(LED9, 1);
+        //1, 0);
+        //2, 0);
+        //3, 0);
+        //4, 0);
+        //5, 0);
+        //6, 0);
+        //7, 0);
+        //8, 0);
+        //9, 1);
         if (PROGRAMRead > THRESHOLD_SAVE && PROGRAMRead < THRESHOLD_LOAD) //SAVE clicked
         {
           //recallPatch(1);
@@ -741,19 +741,19 @@ void checkKnobs()
           {
             KNOB1Value=KNOB1Read;
             KNOB1Read = (KNOB1Read >> 3);
-            OnControlChange(SYNTH_MIDICHANNEL, CC_Flanger_On, KNOB1Read);
+            OnControlChange(SYNTH_MIDICHANNEL, CC_Volume, KNOB1Read);
           }
           if (KNOB2Read > (KNOB2Value + controlThresh) || KNOB2Read < (KNOB2Value - controlThresh))
           {
             KNOB2Value=KNOB2Read;
             KNOB2Read = (KNOB2Read >> 3);
-            OnControlChange(SYNTH_MIDICHANNEL, CC_Flanger_Offset, KNOB2Read);
+            OnControlChange(SYNTH_MIDICHANNEL, CC_Pan, KNOB2Read);
           }
           if (KNOB3Read > (KNOB3Value + controlThresh) || KNOB3Read < (KNOB3Value - controlThresh))
           {
             KNOB3Value=KNOB3Read;
             KNOB3Read = (KNOB3Read >> 3);
-            OnControlChange(SYNTH_MIDICHANNEL, CC_Flanger_Depth, KNOB3Read);
+            OnControlChange(SYNTH_MIDICHANNEL, CC_Noise, KNOB3Read);
           }
           if (KNOB4Read > (KNOB4Value + controlThresh) || KNOB4Read < (KNOB4Value - controlThresh))
           {
@@ -766,15 +766,15 @@ void checkKnobs()
     }
     else
     {
-      digitalWrite(LED1, 0);
-      digitalWrite(LED2, 0);
-      digitalWrite(LED3, 0);
-      digitalWrite(LED4, 0);
-      digitalWrite(LED5, 0);
-      digitalWrite(LED6, 0);
-      digitalWrite(LED7, 0);
-      digitalWrite(LED8, 0);
-      digitalWrite(LED9, 0);
+      //1, 0);
+      //2, 0);
+      //3, 0);
+      //4, 0);
+      //5, 0);
+      //6, 0);
+      //7, 0);
+      //8, 0);
+      //9, 0);
       lcd.clear();
     }
 
