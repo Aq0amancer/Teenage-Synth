@@ -396,7 +396,8 @@ void OnControlChange(uint8_t channel, uint8_t control, uint8_t value)
     }
     channelVolume = 1 - value / 127.;
     updateMasterVolume();
-    //printLCD("Master", "Volume", (char)channelVolume, "");
+    sprintf(buffer_secondrow, "Volume:%9f", channelVolume);
+    printLCD("Master",  buffer_secondrow);
     break;
   }
   case CC_Pan: // PAN
@@ -405,7 +406,6 @@ void OnControlChange(uint8_t channel, uint8_t control, uint8_t value)
     {
       left = 1.00;
       right = (127 - value) / 64.;
-      //printLCD("Master", "Pan", (char)right, "L");
     }
     else
     {
@@ -413,6 +413,8 @@ void OnControlChange(uint8_t channel, uint8_t control, uint8_t value)
       left = value / 64.;
       //printLCD("Master", "Pan", (char)left, "R");
     }
+    sprintf(buffer_secondrow, "Pan:%12d", value);
+    printLCD("Master",  buffer_secondrow);
     updatePan();
     break;
   }

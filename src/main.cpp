@@ -213,7 +213,7 @@ void selectCommand(char c)
 void setup()
 {
   Serial.begin(115200);
-
+  //MIDI.begin();
   // LCD
 
   lcd.begin(16, 2);
@@ -292,8 +292,8 @@ void setup()
 
 void loop()
 {
+  //SYNTH_SERIAL.read();
   MIDI.read();
-  //usbMIDI.read();
 
 #if SYNTH_DEBUG > 0
   performanceCheck();
