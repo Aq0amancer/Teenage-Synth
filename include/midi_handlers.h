@@ -4,6 +4,7 @@
 #include "global_variables.h"
 #include <LiquidCrystal.h>
 #include <string>
+#include "Wire.h"
 
 Oscillator *OnNoteOffReal(uint8_t channel, uint8_t note, uint8_t velocity, bool ignoreSustain)
 {
@@ -11,7 +12,7 @@ Oscillator *OnNoteOffReal(uint8_t channel, uint8_t note, uint8_t velocity, bool 
     return 0;
 
 #if 0 //#ifdef SYNTH_DEBUG
-  SYNTH_SERIAL.println("NoteOff");
+  Serial.println("NoteOff");
 #endif
   int8_t lastNote = notesDel(notesPressed, note);
   filterEnvelope.noteOff();
@@ -96,7 +97,7 @@ void OnNoteOn(uint8_t channel, uint8_t note, uint8_t velocity)
     return;
 
 #if SYNTH_DEBUG > 1
-  SYNTH_SERIAL.println("NoteOn");
+  Serial.println("NoteOn");
 #endif
   filterEnvelope.noteOn();
 
@@ -126,7 +127,7 @@ void OnNoteOn(uint8_t channel, uint8_t note, uint8_t velocity)
   if (!curOsc && *notesOn != -1)
   {
 #if SYNTH_DEBUG > 0
-    SYNTH_SERIAL.println("Stealing voice");
+    Serial.println("Stealing voice");
 #endif
     curOsc = OnNoteOffReal(channel, *notesOn, velocity, true);
   }
@@ -144,12 +145,12 @@ inline void OnNoteOff(uint8_t channel, uint8_t note, uint8_t velocity)
 void OnAfterTouchPoly(uint8_t channel, uint8_t note, uint8_t value)
 {
 #if SYNTH_DEBUG > 0
-  SYNTH_SERIAL.print("AfterTouchPoly: channel ");
-  SYNTH_SERIAL.print(channel);
-  SYNTH_SERIAL.print(", note ");
-  SYNTH_SERIAL.print(note);
-  SYNTH_SERIAL.print(", value ");
-  SYNTH_SERIAL.println(value);
+  Serial.print("AfterTouchPoly: channel ");
+  Serial.print(channel);
+  Serial.print(", note ");
+  Serial.print(note);
+  Serial.print(", value ");
+  Serial.println(value);
 #endif
 }
 
@@ -202,10 +203,10 @@ void OnControlChange(uint8_t channel, uint8_t control, uint8_t value)
     break;
   }
 #if SYNTH_DEBUG > 1
-    SYNTH_SERIAL.print("Waveform 1 change: channel ");
-    SYNTH_SERIAL.print(channel);
-    SYNTH_SERIAL.print(", program ");
-    SYNTH_SERIAL.println((String)progs[currentProgram1]);
+    Serial.print("Waveform 1 change: channel ");
+    Serial.print(channel);
+    Serial.print(", program ");
+    Serial.println((String)progs[currentProgram1]);
 #endif
     break;
 
@@ -263,10 +264,10 @@ void OnControlChange(uint8_t channel, uint8_t control, uint8_t value)
     break;
   }
 #if SYNTH_DEBUG > 1
-    SYNTH_SERIAL.print("Waveform 2 change: channel ");
-    SYNTH_SERIAL.print(channel);
-    SYNTH_SERIAL.print(", program ");
-    SYNTH_SERIAL.println((String)progs[currentProgram2]);
+    Serial.print("Waveform 2 change: channel ");
+    Serial.print(channel);
+    Serial.print(", program ");
+    Serial.println((String)progs[currentProgram2]);
 #endif
     break;
 
@@ -674,22 +675,22 @@ void OnControlChange(uint8_t channel, uint8_t control, uint8_t value)
   }
   default:
 #if SYNTH_DEBUG > 0
-    SYNTH_SERIAL.print("Unhandled Control Change: channel ");
-    SYNTH_SERIAL.print(channel);
-    SYNTH_SERIAL.print(", control ");
-    SYNTH_SERIAL.print(control);
-    SYNTH_SERIAL.print(", value ");
-    SYNTH_SERIAL.println(value);
+    Serial.print("Unhandled Control Change: channel ");
+    Serial.print(channel);
+    Serial.print(", control ");
+    Serial.print(control);
+    Serial.print(", value ");
+    Serial.println(value);
 #endif
     break;
   }
 #if SYNTH_DEBUG > 1 //0
-  SYNTH_SERIAL.print("Control Change: channel ");
-  SYNTH_SERIAL.print(channel);
-  SYNTH_SERIAL.print(", control ");
-  SYNTH_SERIAL.print(control);
-  SYNTH_SERIAL.print(", value ");
-  SYNTH_SERIAL.println(value);
+  Serial.print("Control Change: channel ");
+  Serial.print(channel);
+  Serial.print(", control ");
+  Serial.print(control);
+  Serial.print(", value ");
+  Serial.println(value);
 #endif
 }
 
@@ -701,10 +702,10 @@ void OnPitchChange(uint8_t channel, int pitch)
     return;
 
 #if SYNTH_DEBUG > 1
-  SYNTH_SERIAL.print("PitchChange: channel ");
-  SYNTH_SERIAL.print(channel);
-  SYNTH_SERIAL.print(", pitch ");
-  SYNTH_SERIAL.println(pitch);
+  Serial.print("PitchChange: channel ");
+  Serial.print(channel);
+  Serial.print(", pitch ");
+  Serial.println(pitch);
 #endif
 
 #ifdef USB_MIDI
@@ -727,35 +728,35 @@ void OnAfterTouch(uint8_t channel, uint8_t pressure)
     return;
 
 #if SYNTH_DEBUG > 0
-  SYNTH_SERIAL.print("AfterTouch: channel ");
-  SYNTH_SERIAL.print(channel);
-  SYNTH_SERIAL.print(", pressure ");
-  SYNTH_SERIAL.println(pressure);
+  Serial.print("AfterTouch: channel ");
+  Serial.print(channel);
+  Serial.print(", pressure ");
+  Serial.println(pressure);
 #endif
 }
 
 void OnSysEx(const uint8_t *data, uint16_t length, bool complete)
 {
 #if SYNTH_DEBUG > 0
-  SYNTH_SERIAL.print("SysEx: length ");
-  SYNTH_SERIAL.print(length);
-  SYNTH_SERIAL.print(", complete ");
-  SYNTH_SERIAL.println(complete);
+  Serial.print("SysEx: length ");
+  Serial.print(length);
+  Serial.print(", complete ");
+  Serial.println(complete);
 #endif
 }
 
 void OnRealTimeSystem(uint8_t realtimebyte)
 {
 #if SYNTH_DEBUG > 0
-  SYNTH_SERIAL.print("RealTimeSystem: ");
-  SYNTH_SERIAL.println(realtimebyte);
+  Serial.print("RealTimeSystem: ");
+  Serial.println(realtimebyte);
 #endif
 }
 
 void OnTimeCodeQFrame(uint16_t data)
 {
 #if SYNTH_DEBUG > 0
-  SYNTH_SERIAL.print("TimeCodeQuarterFrame: ");
-  SYNTH_SERIAL.println(data);
+  Serial.print("TimeCodeQuarterFrame: ");
+  Serial.println(data);
 #endif
 }

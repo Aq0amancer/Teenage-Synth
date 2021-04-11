@@ -100,7 +100,7 @@ char buffer_secondrow[16];
 
 ////////////////////////////////////////////////////////////
 
-#define SYNTH_DEBUG 1
+#define SYNTH_DEBUG 2
 // define MIDI channel
 #define SYNTH_MIDICHANNEL 1
 // define tuning of A4 in Hz
@@ -128,12 +128,12 @@ const float FILTERFREQS[128] = {20, 23, 26, 29, 32, 36, 40, 46, 53, 60, 69, 78, 
 #include <MIDI.h>
 
 // switch between USB and UART MIDI
-#ifdef USB_MIDI
-#define SYNTH_SERIAL Serial1
-#else // 'real' MIDI via UART
-#define SYNTH_SERIAL Serial
-MIDI_CREATE_INSTANCE(HardwareSerial, Serial1, MIDI);
-#endif
+//#ifdef USB_MIDI
+//#define SYNTH_SERIAL Serial1
+//#else // 'real' MIDI via UART
+//#define SYNTH_SERIAL Serial
+//MIDI_CREATE_INSTANCE(HardwareSerial, Serial1, MIDI);
+//#endif
 
 float masterVolume = 1;
 

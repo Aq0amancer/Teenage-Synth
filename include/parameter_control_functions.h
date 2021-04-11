@@ -5,6 +5,7 @@
 // set SYNTH_DEBUG to enable debug logging (1=most,2=all messages)
 #include "global_variables.h"
 #include "LCD.h"
+#include "Wire.h"
 
 inline float noteToFreq(float note, uint8_t waveform)
 {
@@ -120,7 +121,7 @@ inline void updateFiltEnvelope()
   filterEnvelope.decay(FiltDecay);
   filterEnvelope.sustain(FiltSustain);
   filterEnvelope.release(FiltRelease);
-  SYNTH_SERIAL.println((String)FiltRelease);
+  Serial.println((String)FiltRelease);
 }
 inline void updateEnvelopeMode()
 {
@@ -150,12 +151,12 @@ void updateFlanger()
     flangerR.voices(flangerOffset, flangerDepth, flangerFreqCoarse + flangerFreqFine);
     //AudioInterrupts();
 #if SYNTH_DEBUG > 1
-    SYNTH_SERIAL.print("Flanger: offset=");
-    SYNTH_SERIAL.print(flangerOffset);
-    SYNTH_SERIAL.print(", depth=");
-    SYNTH_SERIAL.print(flangerDepth);
-    SYNTH_SERIAL.print(", freq=");
-    SYNTH_SERIAL.println(flangerFreqCoarse + flangerFreqFine);
+    Serial.print("Flanger: offset=");
+    Serial.print(flangerOffset);
+    Serial.print(", depth=");
+    Serial.print(flangerDepth);
+    Serial.print(", freq=");
+    Serial.println(flangerFreqCoarse + flangerFreqFine);
 #endif
   }
   else
@@ -250,8 +251,8 @@ inline void updateMasterVolume() {
     masterVolume = vol;
     sgtl5000_1.volume(masterVolume);
 #if SYNTH_DEBUG > 0
-    SYNTH_SERIAL.print("Volume: ");
-    SYNTH_SERIAL.println(vol);
+    Serial.print("Volume: ");
+    Serial.println(vol);
 #endif
   }
 }
